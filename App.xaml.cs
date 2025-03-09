@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace ImageProcessing
+namespace ImageProcessing.App
 {
     /// <summary>
     /// Interaction logic for App.xaml
