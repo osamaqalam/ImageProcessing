@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="ImageProcessing.App.Views.Flowchart.ToolboxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:ImageProcessing.App.ViewModels.Flowchart"
+             xmlns:models="clr-namespace:ImageProcessing.App.Models.Flowchart">
+
+    <!--<UserControl.DataContext>
+        <viewModels:ToolboxViewModel/>
+    </UserControl.DataContext>
+
+    <Grid>
+        <ItemsControl ItemsSource="{Binding ToolboxItems}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:ToolboxItem}">
+                    <Border Padding="5" Margin="2" Background="#FF252526"
+                            MouseMove="OnToolboxItemMouseMove">
+                        <TextBlock Text="{Binding Title}" Foreground="White"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>-->
+</UserControl>
