@@ -1,11 +1,14 @@
 ﻿// Utilities/PositionConverter.cs
+
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
 namespace ImageProcessing.App.Utilities
 {
-
+    /// <summary>
+    /// Used for converting the margin from double x, double y to Thickness object
+    /// </summary>
     public class PositionConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

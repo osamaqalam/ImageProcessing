@@ -48,7 +48,7 @@ public class MainViewModel : ViewModelBase
         var newNode = new LoadImageNodeViewModel(_imageService)
         {
             X = 100, // Default position
-            Y = 100
+            Y = Nodes.Any() ? Nodes.Last().Y + 100 : 100
         };
 
         Nodes.Add(newNode);

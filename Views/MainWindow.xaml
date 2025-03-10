@@ -11,15 +11,22 @@
     </Window.Resources>
 
     <Grid>
-        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Add Node" Command="{Binding AddNodeCommand}"/>
-        </StackPanel>-->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <Button Content="Add LoadImage Node" Command="{Binding AddNodeCommand}"/>
+        </StackPanel>
 
         <ItemsControl ItemsSource="{Binding Nodes}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:LoadImageNodeViewModel}">
                     <Grid>
-                        <flowchart:LoadImageNodeView Margin="100,100,0,0"/>
+                        <flowchart:LoadImageNodeView>
+                            <flowchart:LoadImageNodeView.Margin>
+                                <MultiBinding Converter="{StaticResource PositionConverter}">
+                                    <Binding Path="X"/>
+                                    <Binding Path="Y"/>
+                                </MultiBinding>
+                            </flowchart:LoadImageNodeView.Margin>
+                        </flowchart:LoadImageNodeView>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
