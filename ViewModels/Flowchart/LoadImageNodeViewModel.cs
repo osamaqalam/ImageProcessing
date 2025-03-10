@@ -13,6 +13,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
 using System.IO;
 using ImageProcessing.App.Models.Imaging;
+using ImageProcessing.App.Views;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
@@ -42,7 +43,13 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         public BitmapImage? LoadedBitmap
         {
             get => _loadedBitmap;
-            private set => SetProperty(ref _loadedBitmap, value);
+            private set
+            {
+                if (SetProperty(ref _loadedBitmap, value))
+                {
+                    OpenImageWindow(value);
+                }
+            }
         }
         public LoadImageNodeViewModel(IImageService imageService)
         {
@@ -79,6 +86,16 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             }
             bitmap.Freeze(); // For thread safety
             return bitmap;
+        }
+
+        private void OpenImageWindow(BitmapImage bitmapImage)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var imageWindow = new ImageWindow();
+                imageWindow.SetImage(bitmapImage);
+                imageWindow.Show();
+            });
         }
     }
 }

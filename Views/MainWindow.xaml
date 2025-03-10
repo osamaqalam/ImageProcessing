@@ -1,25 +1,29 @@
-﻿<!-- MainWindow.xaml -->
-<Window x:Class="ImageProcessing.App.Views.MainWindow"
+﻿<Window x:Class="ImageProcessing.App.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:flowchart="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
+        xmlns:viewModels="clr-namespace:ImageProcessing.App.ViewModels.Flowchart"
+        xmlns:converters="clr-namespace:ImageProcessing.App.Utilities"
         Title="Flowchart App" Height="600" Width="800">
 
-    <Grid>
-        <!-- Toolbar (optional) -->
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Add Node" Command="{Binding AddNodeCommand}"/>
-        </StackPanel>
+    <Window.Resources>
+        <converters:PositionConverter x:Key="PositionConverter"/>
+    </Window.Resources>
 
-        <!-- Flowchart Canvas -->
+    <Grid>
+        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <Button Content="Add Node" Command="{Binding AddNodeCommand}"/>
+        </StackPanel>-->
+
         <ItemsControl ItemsSource="{Binding Nodes}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <flowchart:LoadImageNodeView Margin="{Binding X, Converter={StaticResource PositionConverter}}"/>
+                <DataTemplate DataType="{x:Type viewModels:LoadImageNodeViewModel}">
+                    <Grid>
+                        <flowchart:LoadImageNodeView Margin="100,100,0,0"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
 
-            <!-- Custom positioning -->
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas/>

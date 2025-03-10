@@ -1,17 +1,18 @@
-<!-- LoadImageNodeView.xaml -->
-<UserControl x:Class="ImageProcessing.App.Views.Flowchart.Nodes.LoadImageNodeView"
+﻿<UserControl x:Class="ImageProcessing.App.Views.Flowchart.Nodes.LoadImageNodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-    <Border Width="120" Background="#FF2D2D30" CornerRadius="4">
-        <StackPanel Margin="8">
-            <TextBlock Text="Load Image" Foreground="White" FontWeight="Bold"/>
-            <Button Content="Browse" Command="{Binding BrowseCommand}" Margin="0 8"/>
-
-            <!-- Display the loaded image -->
-            <Image Source="{Binding LoadedBitmap}" 
-                   Width="100" 
-                   Stretch="Uniform"/>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="300">
+    <Border Background="#FF2D2D30" CornerRadius="4" Padding="8">
+        <StackPanel>
+            <TextBlock Text="Load Image Node" 
+                       Foreground="White" 
+                       FontWeight="Bold"
+                       Margin="0,0,0,8"/>
+            <Button Content="Browse" 
+                    Command="{Binding BrowseCommand}"/>
         </StackPanel>
     </Border>
 </UserControl>

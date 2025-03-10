@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using ImageProcessing.App.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +21,7 @@ namespace ImageProcessing.App.Views
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = ((App)Application.Current).Services.GetRequiredService<MainViewModel>();
         }
     }
 }
