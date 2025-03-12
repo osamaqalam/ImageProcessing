@@ -25,7 +25,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         public ICommand BrowseCommand { get; }
 
         private string? _imagePath;
-        public string ImagePath
+        public string? ImagePath
         {
             get => _imagePath;
             set

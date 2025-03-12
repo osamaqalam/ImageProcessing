@@ -27,7 +27,10 @@ namespace ImageProcessing.App
             // Register ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<ToolboxViewModel>();
+            services.AddTransient<StartNodeViewModel>();
+            services.AddTransient<EndNodeViewModel>();
             services.AddTransient<LoadImageNodeViewModel>();
+            services.AddTransient<ConnectionViewModel>();
 
             return services.BuildServiceProvider();
         }

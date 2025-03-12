@@ -2,6 +2,7 @@
 using ImageProcessing.App.Utilities;
 using ImageProcessing.App.ViewModels.Flowchart;
 using System.Collections.ObjectModel;
+using System.IO.Packaging;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -13,6 +14,7 @@ public class MainViewModel : ViewModelBase
 
     // Collection of flowchart nodes
     public ObservableCollection<FlowchartNodeViewModel> Nodes { get; } = new();
+    public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
 
     // Currently selected node (for context menus/properties)
     private FlowchartNodeViewModel? _selectedNode;
@@ -30,16 +32,19 @@ public class MainViewModel : ViewModelBase
     {
         _imageService = imageService;
 
-        // Add a default node
-        Nodes.Add(new LoadImageNodeViewModel(_imageService)
-        {
-            X = 100,
-            Y = 100
-        });
+        // Initialize start and end nodes
+        var startNode = new StartNodeViewModel { X = 300, Y = 100 };
+        var endNode = new EndNodeViewModel { X = 300, Y = 300 };
+
+        Nodes.Add(startNode);
+        Nodes.Add(endNode);
+
+        var connection = new ConnectionViewModel(startNode, endNode);
+        Connections.Add(connection);
 
         // Initialize commands
-        AddNodeCommand = new RelayCommand(_ => AddNode());
-        DeleteNodeCommand = new RelayCommand(_ => DeleteNode(), _ => CanDeleteNode());
+        AddNodeCommand = new RelayCommand(execute => AddNode());
+        DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
     }
 
     /// <summary>Adds a new node to the flowchart canvas</summary>
@@ -47,11 +52,12 @@ public class MainViewModel : ViewModelBase
     {
         var newNode = new LoadImageNodeViewModel(_imageService)
         {
-            X = 100, // Default position
-            Y = Nodes.Any() ? Nodes.Last().Y + 100 : 100
+            X = Nodes.Last().X, // Default position
+            Y = Nodes.Any() ? Nodes[Nodes.Count - 2].Y + 50 : 100
         };
+        Nodes.Insert(Nodes.Count - 1, newNode); // Node before the endnode
+        //Nodes.Add(newNode);
 
-        Nodes.Add(newNode);
     }
 
     /// <summary>Removes the currently selected node</summary>

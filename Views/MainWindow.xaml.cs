@@ -21,6 +21,9 @@ namespace ImageProcessing.App.Views
         public MainWindow()
         {
             InitializeComponent();
+
+            // Enable data binding in MainWindow.xaml to attributes defined in MainViewModel.cs
+            // This implements concept of Dependency Injection which promotes seperation of concerns
             DataContext = ((App)Application.Current).Services.GetRequiredService<MainViewModel>();
         }
     }
