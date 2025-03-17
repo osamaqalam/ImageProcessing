@@ -21,6 +21,11 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:ConnectionViewModel}">
                     <Path Stroke="Black" StrokeThickness="2">
+                        <Path.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                      Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                      CommandParameter="{Binding}"/>
+                        </Path.InputBindings>
                         <Path.Data>
                             <MultiBinding Converter="{StaticResource ArrowPathConverter}">
                                 <Binding Path="Source"/>

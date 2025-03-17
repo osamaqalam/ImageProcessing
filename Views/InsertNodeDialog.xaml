@@ -1,0 +1,16 @@
+﻿<Window x:Class="ImageProcessing.App.Views.InsertNodeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Insert Node" Height="200" Width="300">
+    <StackPanel>
+        <ListBox ItemsSource="{Binding AvailableNodeTypes}" 
+                 SelectedItem="{Binding SelectedNodeType}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Title}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="OK" Command="{Binding OkCommand}"/>
+    </StackPanel>
+</Window>
