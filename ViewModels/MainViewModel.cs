@@ -17,6 +17,18 @@ public class MainViewModel : ViewModelBase
     public ObservableCollection<FlowchartNodeViewModel> Nodes { get; } = new();
     public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
 
+    // Commands
+    public ICommand AddNodeCommand { get; }
+    public ICommand DeleteNodeCommand { get; }
+    public ICommand ConnectionClickedCommand { get; }
+
+    private const double FLOWCHART_CENTER_X = 300;
+    private const double FLOWCHART_START_Y = 100;
+    private const double FLOWCHART_END_Y = 300;
+    private const double FLOWCHART_START_END_WIDTH = 10;
+    private const double FLOWCHART_START_END_HEIGHT = 10;
+
+
     // Currently selected node (for context menus/properties)
     private FlowchartNodeViewModel? _selectedNode;
     public FlowchartNodeViewModel? SelectedNode
@@ -25,18 +37,20 @@ public class MainViewModel : ViewModelBase
         set => SetProperty(ref _selectedNode, value);
     }
 
-    // Commands
-    public ICommand AddNodeCommand { get; }
-    public ICommand DeleteNodeCommand { get; }
-    public ICommand ConnectionClickedCommand { get; }
-
     public MainViewModel(IImageService imageService)
     {
         _imageService = imageService;
 
         // Initialize start and end nodes
-        var startNode = new StartNodeViewModel { X = 300, Y = 100 };
-        var endNode = new EndNodeViewModel { X = 300, Y = 300 };
+        var startNode = new StartNodeViewModel { X = FLOWCHART_CENTER_X,
+            Y = FLOWCHART_START_Y, 
+            Width = FLOWCHART_START_END_WIDTH, 
+            Height = FLOWCHART_START_END_HEIGHT };
+
+        var endNode = new EndNodeViewModel { X = FLOWCHART_CENTER_X, 
+            Y = FLOWCHART_END_Y, 
+            Width = FLOWCHART_START_END_WIDTH, 
+            Height = FLOWCHART_START_END_HEIGHT };
 
         Nodes.Add(startNode);
         Nodes.Add(endNode);
@@ -45,22 +59,8 @@ public class MainViewModel : ViewModelBase
         Connections.Add(connection);
 
         // Initialize commands
-        AddNodeCommand = new RelayCommand(execute => AddNode());
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
-    }
-
-    /// <summary>Adds a new node to the flowchart canvas</summary>
-    private void AddNode()
-    {
-        var newNode = new LoadImageNodeViewModel(_imageService)
-        {
-            X = Nodes.Last().X, // Default position
-            Y = Nodes.Any() ? Nodes[Nodes.Count - 2].Y + 50 : 100
-        };
-        Nodes.Insert(Nodes.Count - 1, newNode); // Node before the endnode
-        //Nodes.Add(newNode);
-
     }
 
     /// <summary>Removes the currently selected node</summary>

@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="300">
-    <Border Background="#FF2D2D30" CornerRadius="4" Padding="8">
+    <Border Width="{Binding Width}" 
+            Height="{Binding Height}"
+            Background="#FF2D2D30" 
+            CornerRadius="4" 
+            Padding="8">
         <StackPanel>
-            <TextBlock Text="Load Image Node" 
+            <TextBlock Text="Load Image" 
                        Foreground="White" 
                        FontWeight="Bold"
                        Margin="0,0,0,8"/>

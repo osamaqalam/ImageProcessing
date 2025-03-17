@@ -53,6 +53,10 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         }
         public LoadImageNodeViewModel(IImageService imageService)
         {
+            // Set custom size for image nodes
+            Width = 100;
+            Height = 60;
+
             _imageService = imageService;
             BrowseCommand = new RelayCommand(_ => BrowseImage());
         }

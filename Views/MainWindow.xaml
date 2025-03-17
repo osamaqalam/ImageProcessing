@@ -12,9 +12,6 @@
     </Window.Resources>
 
     <Grid>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Add LoadImage Node" Command="{Binding AddNodeCommand}"/>
-        </StackPanel>
 
         <!-- Draw connections FIRST (behind nodes) -->
         <ItemsControl ItemsSource="{Binding Connections}">
@@ -51,6 +48,8 @@
                                 <MultiBinding Converter="{StaticResource PositionConverter}">
                                     <Binding Path="X"/>
                                     <Binding Path="Y"/>
+                                    <Binding Path="Width"/>
+                                    <Binding Path="Height"/>
                                 </MultiBinding>
                             </Ellipse.Margin>
                         </Ellipse>
@@ -64,6 +63,8 @@
                                 <MultiBinding Converter="{StaticResource PositionConverter}">
                                     <Binding Path="X"/>
                                     <Binding Path="Y"/>
+                                    <Binding Path="Width"/>
+                                    <Binding Path="Height"/>
                                 </MultiBinding>
                             </Ellipse.Margin>
                         </Ellipse>
@@ -77,6 +78,8 @@
                                 <MultiBinding Converter="{StaticResource PositionConverter}">
                                     <Binding Path="X"/>
                                     <Binding Path="Y"/>
+                                    <Binding Path="Width"/>
+                                    <Binding Path="Height"/>
                                 </MultiBinding>
                             </flowchart:LoadImageNodeView.Margin>
                         </flowchart:LoadImageNodeView>

@@ -13,9 +13,14 @@ namespace ImageProcessing.App.Utilities
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length == 2 && values[0] is double x && values[1] is double y)
+            if (values.Length == 4
+                && values[0] is double x
+                && values[1] is double y
+                && values[2] is double width
+                && values[3] is double height)
             {
-                return new Thickness(x, y, 0, 0);
+                // Center the node by subtracting half its dimensions
+                return new Thickness(x - width / 2, y - height / 2, 0, 0);
             }
             return new Thickness(0);
         }

@@ -16,10 +16,11 @@ namespace ImageProcessing.App.Utilities
                 !(values[1] is FlowchartNodeViewModel target))
                 return Geometry.Empty;
 
-            return new LineGeometry(
-                new Point(source.X, source.Y),
-                new Point(target.X, target.Y)
-            );
+            // Calculate connection points considering node dimensions
+            var start = new Point(source.X, source.Y + source.Height / 2);
+            var end = new Point(target.X, target.Y - target.Height / 2);
+
+            return new LineGeometry(start, end);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
