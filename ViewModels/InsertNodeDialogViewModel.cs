@@ -21,9 +21,15 @@ namespace ImageProcessing.App.ViewModels
 
             OkCommand = new RelayCommand(_ =>
             {
-                CloseDialogRequested?.Invoke();
+                if (SelectedNodeType != null)
+                {
+                    CloseDialogRequested?.Invoke();
+                }
+                else
+                {
+                    MessageBox.Show("Please select a node type.");
+                }
             });
-
         }
     }
 }

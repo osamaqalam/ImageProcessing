@@ -29,12 +29,28 @@ namespace ImageProcessing.App.Views
             DataContext = ((App)Application.Current).Services.GetRequiredService<InsertNodeDialogViewModel>();
             if (DataContext is InsertNodeDialogViewModel vm)
             {
-                vm.CloseDialogRequested += () =>
-                {
-                    this.DialogResult = true; // Set on THIS dialog window
-                    this.Close();
-                };
+                vm.CloseDialogRequested += OnCloseDialogRequested;
             }
+        }
+
+        private void OnCloseDialogRequested()
+        {
+            // Ensure the window is loaded and shown before setting DialogResult
+            if (!IsLoaded)
+            {
+                // If window isn't loaded yet, defer the close operation
+                Loaded += (s, e) => CloseWithResult(true);
+            }
+            else
+            {
+                CloseWithResult(true);
+            }
+        }
+
+        private void CloseWithResult(bool? result)
+        {
+            DialogResult = result;
+            Close();
         }
     }
 }
