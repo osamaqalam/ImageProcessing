@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace ImageProcessing.App.ViewModels
 {
     public class FlowchartNodeViewModel : ViewModelBase
     {
+        private string _nodeId = Guid.NewGuid().ToString();
+        public string NodeId { get => _nodeId; set => SetProperty(ref _nodeId, value); }
+
         private double _x;
         public double X { get => _x; set => SetProperty(ref _x, value); }
 
@@ -20,5 +24,6 @@ namespace ImageProcessing.App.ViewModels
 
         private double _height = 100;
         public double Height { get => _height; set => SetProperty(ref _height, value); }
+
     }
 }

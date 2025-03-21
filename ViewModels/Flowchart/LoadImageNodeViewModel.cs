@@ -1,26 +1,21 @@
 ﻿using ImageProcessing.App.Models.Flowchart;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ImageProcessing.App.Utilities;
 using ImageProcessing.App.Services.Imaging;
 using System.Windows.Media.Imaging;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
 using System.IO;
 using ImageProcessing.App.Models.Imaging;
 using ImageProcessing.App.Views;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    public class LoadImageNodeViewModel : FlowchartNodeViewModel
+    public class LoadImageNodeViewModel : FlowchartNodeViewModel, IImageOutputNode
     {
         private readonly IImageService _imageService;
         private LoadImageNode _model = new();
+        
+        public event Action<BitmapImage>? ImageOutputted;
 
         public ICommand BrowseCommand { get; }
 
@@ -48,6 +43,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
                 if (SetProperty(ref _loadedBitmap, value))
                 {
                     OpenImageWindow(value);
+                    ImageOutputted?.Invoke(value);
                 }
             }
         }

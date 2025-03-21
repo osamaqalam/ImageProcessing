@@ -6,6 +6,9 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
+using ImageProcessing.App.Models.Flowchart;
+using System.Windows.Media.Imaging;
+using ImageProcessing.App.Models.Imaging;
 
 namespace ImageProcessing.App.ViewModels;
 
@@ -16,6 +19,7 @@ public class MainViewModel : ViewModelBase
     // Collection of flowchart nodes
     public ObservableCollection<FlowchartNodeViewModel> Nodes { get; } = new();
     public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
+    public ObservableDictionary<string, ImageNodeData> OutputImages { get; } = new();
 
     // Commands
     public ICommand AddNodeCommand { get; }
@@ -102,6 +106,14 @@ public class MainViewModel : ViewModelBase
         newNode.X = (connection.Source.X + connection.Target.X) / 2;
         newNode.Y = (connection.Source.Y + connection.Target.Y) / 2;
 
+        // Handle image output if supported
+        if (newNode is IImageOutputNode imageNode)
+        {
+            imageNode.ImageOutputted += (image) =>
+                Application.Current.Dispatcher.Invoke(() =>
+                    RegisterOutputImage(newNode, image));
+        }
+
         // Update connections
         Connections.Remove(connection);
         Connections.Add(new ConnectionViewModel(connection.Source, newNode));
@@ -109,6 +121,12 @@ public class MainViewModel : ViewModelBase
 
         // Add node to collection
         Nodes.Insert(Nodes.IndexOf(connection.Target), newNode);
+    }
+
+    private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
+    {
+        var imageData = new ImageNodeData(image, node);
+        OutputImages.AddOrUpdate(node.NodeId, imageData);
     }
 
 }
