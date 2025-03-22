@@ -28,9 +28,9 @@ public class MainViewModel : ViewModelBase
 
     private const double FLOWCHART_CENTER_X = 300;
     private const double FLOWCHART_START_Y = 100;
-    private const double FLOWCHART_END_Y = 300;
     private const double FLOWCHART_START_END_WIDTH = 10;
     private const double FLOWCHART_START_END_HEIGHT = 10;
+    private const double FLOWCHART_NODES_GAP = 100;
 
 
     // Currently selected node (for context menus/properties)
@@ -52,7 +52,7 @@ public class MainViewModel : ViewModelBase
             Height = FLOWCHART_START_END_HEIGHT };
 
         var endNode = new EndNodeViewModel { X = FLOWCHART_CENTER_X, 
-            Y = FLOWCHART_END_Y, 
+            Y = FLOWCHART_START_Y + FLOWCHART_NODES_GAP, 
             Width = FLOWCHART_START_END_WIDTH, 
             Height = FLOWCHART_START_END_HEIGHT };
 
@@ -103,8 +103,21 @@ public class MainViewModel : ViewModelBase
     {
         // Create new node
         var newNode = (FlowchartNodeViewModel)Activator.CreateInstance(nodeType, _imageService);
-        newNode.X = (connection.Source.X + connection.Target.X) / 2;
-        newNode.Y = (connection.Source.Y + connection.Target.Y) / 2;
+        newNode.X = connection.Source.X; // Keep X of prev node
+        newNode.Y = connection.Source.Y + FLOWCHART_NODES_GAP;
+
+        // Add node to collection
+        Nodes.Insert(Nodes.IndexOf(connection.Target), newNode);
+
+        // Shift all nodes after inserted one
+        int nextNodeIndex = indexOfNode(connection.Target);
+        if (nextNodeIndex > 0)
+        {
+            for (int i = nextNodeIndex; i < Nodes.Count; i++)
+            {
+                Nodes[i].Y = newNode.Y + (i-nextNodeIndex+1) * FLOWCHART_NODES_GAP;
+            }
+        }
 
         // Handle image output if supported
         if (newNode is IImageOutputNode imageNode)
@@ -114,13 +127,11 @@ public class MainViewModel : ViewModelBase
                     RegisterOutputImage(newNode, image));
         }
 
-        // Update connections
-        Connections.Remove(connection);
-        Connections.Add(new ConnectionViewModel(connection.Source, newNode));
-        Connections.Add(new ConnectionViewModel(newNode, connection.Target));
-
-        // Add node to collection
-        Nodes.Insert(Nodes.IndexOf(connection.Target), newNode);
+        // Redraw all connections
+        Connections.Clear();
+        for (int i=0; i < Nodes.Count-1; i++)
+            Connections.Add(new ConnectionViewModel(Nodes[i], Nodes[i+1]));
+        
     }
 
     private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
@@ -129,4 +140,14 @@ public class MainViewModel : ViewModelBase
         OutputImages.AddOrUpdate(node.NodeId, imageData);
     }
 
+    private int indexOfNode(FlowchartNodeViewModel node)
+    {
+        int i = 0;
+        for (; i < Nodes.Count; i++)
+        {
+            if (Nodes[i].NodeId == node.NodeId)
+                return i;
+        }
+        return -1;
+    }
 }
