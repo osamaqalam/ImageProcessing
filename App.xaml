@@ -5,9 +5,4 @@
              xmlns:viewModels="clr-namespace:ImageProcessing.App.ViewModels.Flowchart"
              xmlns:flowchart="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
              StartupUri="Views/MainWindow.xaml">
-    <Application.Resources>
-        <DataTemplate DataType="{x:Type viewModels:LoadImageNodeViewModel}">
-            <flowchart:LoadImageNodeView/>
-        </DataTemplate>
-    </Application.Resources>
 </Application>
