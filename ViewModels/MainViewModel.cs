@@ -8,7 +8,6 @@ using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using ImageProcessing.App.Models.Flowchart;
 using System.Windows.Media.Imaging;
-using ImageProcessing.App.Models.Imaging;
 
 namespace ImageProcessing.App.ViewModels;
 
@@ -102,11 +101,12 @@ public class MainViewModel : ViewModelBase
     private void InsertNodeIntoConnection(ConnectionViewModel connection, Type nodeType)
     {
         // Create new node
-        var newNode = (FlowchartNodeViewModel)Activator.CreateInstance(nodeType, _imageService);
+        var serviceProvider = ((App)Application.Current).Services;
+        var newNode = (FlowchartNodeViewModel)serviceProvider.GetRequiredService(nodeType);
         newNode.X = connection.Source.X; // Keep X of prev node
         newNode.Y = connection.Source.Y + FLOWCHART_NODES_GAP;
 
-        // Add node to collection
+        // Add node to collection in place of the old connection's target
         Nodes.Insert(Nodes.IndexOf(connection.Target), newNode);
 
         // Shift all nodes after inserted one
@@ -129,8 +129,15 @@ public class MainViewModel : ViewModelBase
 
         // Redraw all connections
         Connections.Clear();
-        for (int i=0; i < Nodes.Count-1; i++)
-            Connections.Add(new ConnectionViewModel(Nodes[i], Nodes[i+1]));
+        for (int i = 0; i < Nodes.Count - 1; i++)
+        {
+            var conn = ActivatorUtilities.CreateInstance<ConnectionViewModel>(
+                serviceProvider,
+                Nodes[i],      
+                Nodes[i + 1]   
+            );
+            Connections.Add(conn);
+        }
         
     }
 
