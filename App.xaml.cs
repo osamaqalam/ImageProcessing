@@ -29,7 +29,6 @@ namespace ImageProcessing.App
 
             // Register ViewModels
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<ToolboxViewModel>();
             services.AddSingleton<InsertNodeDialogViewModel>();
             services.AddTransient<IFlowchartNode, FlowchartNodeViewModel>();
             services.AddTransient<LoadImageNodeViewModel>();
