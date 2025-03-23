@@ -32,8 +32,6 @@ namespace ImageProcessing.App
             services.AddSingleton<ToolboxViewModel>();
             services.AddSingleton<InsertNodeDialogViewModel>();
             services.AddTransient<IFlowchartNode, FlowchartNodeViewModel>();
-            services.AddTransient<StartNodeViewModel>();
-            services.AddTransient<EndNodeViewModel>();
             services.AddTransient<LoadImageNodeViewModel>();
             
             return services.BuildServiceProvider();

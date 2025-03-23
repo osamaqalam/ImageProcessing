@@ -14,7 +14,6 @@ namespace ImageProcessing.App.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly IImageService _imageService;
 
     // Collection of flowchart nodes
@@ -44,7 +43,6 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel(IImageService imageService)
     {
-        _serviceProvider = ((App)Application.Current).Services;
         _imageService = imageService;
 
         // Initialize start and end nodes
@@ -104,7 +102,7 @@ public class MainViewModel : ViewModelBase
     private void InsertNodeIntoConnection(ConnectionViewModel connection, Type nodeType)
     {
         // Create new node
-        var newNode = (FlowchartNodeViewModel)_serviceProvider.GetRequiredService(nodeType);
+        var newNode = (FlowchartNodeViewModel)((App)Application.Current).Services.GetRequiredService(nodeType);
         newNode.X = connection.Source.X; // Keep X of prev node
         newNode.Y = connection.Source.Y + FLOWCHART_NODES_GAP;
 
