@@ -8,15 +8,17 @@ using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using ImageProcessing.App.Models.Flowchart;
 using System.Windows.Media.Imaging;
+using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 
 namespace ImageProcessing.App.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly IImageService _imageService;
 
     // Collection of flowchart nodes
-    public ObservableCollection<FlowchartNodeViewModel> Nodes { get; } = new();
+    public ObservableCollection<IFlowchartNode> Nodes { get; } = new();
     public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
     public ObservableDictionary<string, ImageNodeData> OutputImages { get; } = new();
 
@@ -42,17 +44,18 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel(IImageService imageService)
     {
+        _serviceProvider = ((App)Application.Current).Services;
         _imageService = imageService;
 
         // Initialize start and end nodes
         var startNode = new StartNodeViewModel { X = FLOWCHART_CENTER_X,
-            Y = FLOWCHART_START_Y, 
-            Width = FLOWCHART_START_END_WIDTH, 
+            Y = FLOWCHART_START_Y,
+            Width = FLOWCHART_START_END_WIDTH,
             Height = FLOWCHART_START_END_HEIGHT };
 
         var endNode = new EndNodeViewModel { X = FLOWCHART_CENTER_X, 
-            Y = FLOWCHART_START_Y + FLOWCHART_NODES_GAP, 
-            Width = FLOWCHART_START_END_WIDTH, 
+            Y = FLOWCHART_START_Y + FLOWCHART_NODES_GAP,
+            Width = FLOWCHART_START_END_WIDTH,
             Height = FLOWCHART_START_END_HEIGHT };
 
         Nodes.Add(startNode);
@@ -101,8 +104,7 @@ public class MainViewModel : ViewModelBase
     private void InsertNodeIntoConnection(ConnectionViewModel connection, Type nodeType)
     {
         // Create new node
-        var serviceProvider = ((App)Application.Current).Services;
-        var newNode = (FlowchartNodeViewModel)serviceProvider.GetRequiredService(nodeType);
+        var newNode = (FlowchartNodeViewModel)_serviceProvider.GetRequiredService(nodeType);
         newNode.X = connection.Source.X; // Keep X of prev node
         newNode.Y = connection.Source.Y + FLOWCHART_NODES_GAP;
 
@@ -131,11 +133,7 @@ public class MainViewModel : ViewModelBase
         Connections.Clear();
         for (int i = 0; i < Nodes.Count - 1; i++)
         {
-            var conn = ActivatorUtilities.CreateInstance<ConnectionViewModel>(
-                serviceProvider,
-                Nodes[i],      
-                Nodes[i + 1]   
-            );
+            var conn = new ConnectionViewModel(Nodes[i], Nodes[i+1]);
             Connections.Add(conn);
         }
         
@@ -147,7 +145,7 @@ public class MainViewModel : ViewModelBase
         OutputImages.AddOrUpdate(node.NodeId, imageData);
     }
 
-    private int indexOfNode(FlowchartNodeViewModel node)
+    private int indexOfNode(IFlowchartNode node)
     {
         int i = 0;
         for (; i < Nodes.Count; i++)
