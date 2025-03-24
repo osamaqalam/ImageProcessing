@@ -34,8 +34,8 @@ namespace ImageProcessing.App
             services.AddTransient<LoadImageNodeViewModel>();
             services.AddTransient<GrayscaleNodeViewModel>(sp =>
                 new GrayscaleNodeViewModel(
-                    sp.GetRequiredService<IImageService>(),       // From DI container
-                    sp.GetRequiredService<MainViewModel>().OutputImages // From MainVM
+                    sp.GetRequiredService<IImageService>(),       
+                    sp.GetRequiredService<MainViewModel>().OutputImages 
                 )
             );
             return services.BuildServiceProvider();
