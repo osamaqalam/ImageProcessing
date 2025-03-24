@@ -85,7 +85,22 @@
                         </flowchart:LoadImageNodeView>
                     </Grid>
                 </DataTemplate>
-                
+
+                <DataTemplate DataType="{x:Type vm:GrayscaleNodeViewModel}">
+                    <Grid>
+                        <flowchart:GrayscaleNodeView>
+                            <flowchart:GrayscaleNodeView.Margin>
+                                <MultiBinding Converter="{StaticResource PositionConverter}">
+                                    <Binding Path="X"/>
+                                    <Binding Path="Y"/>
+                                    <Binding Path="Width"/>
+                                    <Binding Path="Height"/>
+                                </MultiBinding>
+                            </flowchart:GrayscaleNodeView.Margin>
+                        </flowchart:GrayscaleNodeView>
+                    </Grid>
+                </DataTemplate>
+
             </ItemsControl.Resources>
 
             <ItemsControl.ItemsPanel>

@@ -17,7 +17,7 @@ namespace ImageProcessing.App.ViewModels
         public InsertNodeDialogViewModel()
         {
             AvailableNodeTypes.Add(new ToolboxItem("Load Image", typeof(LoadImageNodeViewModel)));
-            // Add other node types
+            AvailableNodeTypes.Add(new ToolboxItem("Grayscale", typeof(GrayscaleNodeViewModel)));
 
             OkCommand = new RelayCommand(_ =>
             {

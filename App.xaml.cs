@@ -32,7 +32,12 @@ namespace ImageProcessing.App
             services.AddSingleton<InsertNodeDialogViewModel>();
             services.AddTransient<IFlowchartNode, FlowchartNodeViewModel>();
             services.AddTransient<LoadImageNodeViewModel>();
-            
+            services.AddTransient<GrayscaleNodeViewModel>(sp =>
+                new GrayscaleNodeViewModel(
+                    sp.GetRequiredService<IImageService>(),       // From DI container
+                    sp.GetRequiredService<MainViewModel>().OutputImages // From MainVM
+                )
+            );
             return services.BuildServiceProvider();
         }
     }
