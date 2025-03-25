@@ -26,6 +26,8 @@ public class MainViewModel : ViewModelBase
     public ICommand DeleteNodeCommand { get; }
     public ICommand ConnectionClickedCommand { get; }
 
+    public ICommand ExecuteCommand { get; }
+
     private const double FLOWCHART_CENTER_X = 300;
     private const double FLOWCHART_START_Y = 100;
     private const double FLOWCHART_START_END_WIDTH = 10;
@@ -65,6 +67,24 @@ public class MainViewModel : ViewModelBase
         // Initialize commands
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
+        ExecuteCommand = new RelayCommand(ExecuteAll);
+    }
+
+    private void ExecuteAll(object param)
+    {
+        foreach (var node in Nodes.OfType<IExecutableNode>())
+        {
+            try
+            {
+                if(node.CanExecute())
+                    node.Execute();
+            }
+            catch (Exception ex)
+            {
+                // Handle error
+                //break;
+            }
+        }
     }
 
     /// <summary>Removes the currently selected node</summary>

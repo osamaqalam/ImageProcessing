@@ -12,6 +12,9 @@
     </Window.Resources>
 
     <Grid>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <Button Content="Execute" Command="{Binding ExecuteCommand}"/>
+        </StackPanel>
 
         <!-- Draw connections FIRST (behind nodes) -->
         <ItemsControl ItemsSource="{Binding Connections}">

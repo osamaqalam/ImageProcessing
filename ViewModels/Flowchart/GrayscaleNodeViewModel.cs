@@ -3,6 +3,7 @@ using ImageProcessing.App.Services.Imaging;
 using ImageProcessing.App.Utilities;
 using ImageProcessing.App.Views;
 using System.Windows.Media.Imaging;
+using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
@@ -22,11 +23,20 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             set
             {
                 if (SetProperty(ref _selectedNodeId, value))
+                    ;
+            }
+        }
+
+        private BitmapImage? _outputImage;
+        public BitmapImage? OutputImage
+        {
+            get => _outputImage;
+            private set
+            {
+                if (SetProperty(ref _outputImage, value))
                 {
-                    OutputImages.TryGetValue(value, out ImageNodeData imageNodeData);
-                    BitmapImage grayscaleImage = _imageService.ConvertToGrayscale(imageNodeData.Image); ;
-                    ImageOutputted?.Invoke(grayscaleImage);
-                    OpenImageWindow(grayscaleImage);
+                    OpenImageWindow(value);
+                    ImageOutputted?.Invoke(value);
                 }
             }
         }
@@ -39,6 +49,18 @@ namespace ImageProcessing.App.ViewModels.Flowchart
 
             _imageService = imageService;
             OutputImages = outputImages;
+        }
+
+        public bool CanExecute()
+        {
+            return SelectedNodeId != null;
+        }
+
+        public void Execute()
+        {
+            OutputImages.TryGetValue(SelectedNodeId, out ImageNodeData imageNodeData);
+            OutputImage = _imageService.ConvertToGrayscale(imageNodeData.Image); ;
+            ImageOutputted?.Invoke(OutputImage);
         }
 
         private void OpenImageWindow(BitmapImage bitmapImage)

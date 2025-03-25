@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace ImageProcessing.App.ViewModels.Flowchart.Abstractions
 {
-    public interface IFlowchartNode
+    // For nodes that perform processing
+    public interface IExecutableNode : IFlowchartNode
     {
-        string NodeId { get; }
-        double X { get; set; }
-        double Y { get; set; }
-        double Width { get; set; }
-        double Height { get; set; }
+        void Execute();
+        bool CanExecute();
     }
 }

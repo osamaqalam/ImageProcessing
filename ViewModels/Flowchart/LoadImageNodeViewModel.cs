@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using ImageProcessing.App.Models.Imaging;
 using ImageProcessing.App.Views;
+using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
@@ -34,13 +35,13 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             }
         }
 
-        private BitmapImage? _loadedBitmap;
-        public BitmapImage? LoadedBitmap
+        private BitmapImage? _outputImage;
+        public BitmapImage? OutputImage
         {
-            get => _loadedBitmap;
+            get => _outputImage;
             private set
             {
-                if (SetProperty(ref _loadedBitmap, value))
+                if (SetProperty(ref _outputImage, value))
                 {
                     OpenImageWindow(value);
                     ImageOutputted?.Invoke(value);
@@ -57,6 +58,17 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             BrowseCommand = new RelayCommand(_ => BrowseImage());
         }
 
+        public bool CanExecute()
+        {
+            return ImagePath != null;
+        }
+
+        public void Execute()
+        {
+            var image = _imageService.LoadImage(ImagePath);
+            OutputImage = ConvertToBitmapImage(image); 
+        }
+
         private void BrowseImage()
         {
             var dialog = new OpenFileDialog
@@ -67,8 +79,6 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             if (dialog.ShowDialog() == true)
             {
                 ImagePath = dialog.FileName;
-                var image = _imageService.LoadImage(ImagePath);
-                LoadedBitmap = ConvertToBitmapImage(image);
             }
         }
 

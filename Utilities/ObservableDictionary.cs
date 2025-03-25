@@ -9,8 +9,32 @@ using System.Threading.Tasks;
 
 namespace ImageProcessing.App.Utilities
 {
+    public sealed class MutableKeyValuePair<TKey, TValue> : INotifyPropertyChanged
+    {
+        public TKey Key { get; }
+        private TValue _value;
+
+        public TValue Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            }
+        }
+
+        public MutableKeyValuePair(TKey key, TValue value)
+        {
+            Key = key;
+            _value = value;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+    }
+
     public class ObservableDictionary<TKey, TValue> :
-    ObservableCollection<KeyValuePair<TKey, TValue>>,
+    ObservableCollection<MutableKeyValuePair<TKey, TValue>>,
     INotifyPropertyChanged
     {
         private readonly Dictionary<TKey, int> _keyIndexMap = new();
@@ -22,13 +46,13 @@ namespace ImageProcessing.App.Utilities
         {
             if (_keyIndexMap.TryGetValue(key, out int index))
             {
-                // Update existing
-                this[index] = new KeyValuePair<TKey, TValue>(key, value);
+                // Update the existing value directly 
+                this[index].Value = value;
             }
             else
             {
-                // Add new
-                Add(new KeyValuePair<TKey, TValue>(key, value));
+                // Add a new entry
+                Add(new MutableKeyValuePair<TKey, TValue>(key, value));
             }
         }
 
@@ -57,9 +81,11 @@ namespace ImageProcessing.App.Utilities
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems.Cast<KeyValuePair<TKey, TValue>>())
+                    int startIndex = e.NewStartingIndex;
+                    foreach (var item in e.NewItems.Cast<MutableKeyValuePair<TKey, TValue>>())
                     {
-                        _keyIndexMap[item.Key] = Count - 1;
+                        _keyIndexMap[item.Key] = startIndex;
+                        startIndex++;
                     }
                     break;
 
