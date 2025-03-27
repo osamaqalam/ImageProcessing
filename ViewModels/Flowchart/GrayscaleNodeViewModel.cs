@@ -16,6 +16,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
 
         public event Action<BitmapImage>? ImageOutputted;
 
+        private static int _counter = 0;
+
         private string? _selectedNodeId;
         public string? SelectedNodeId
         {
@@ -46,6 +48,9 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             // Set custom size for image nodes
             Width = 100;
             Height = 60;
+
+            Id = ++_counter;
+            Label = $"Grayscale{(Id > 1 ? $" {Id}" : "")}";
 
             _imageService = imageService;
             OutputImages = outputImages;

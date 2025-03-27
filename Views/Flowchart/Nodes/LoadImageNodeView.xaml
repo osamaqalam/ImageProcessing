@@ -11,10 +11,11 @@
             CornerRadius="4" 
             Padding="8">
         <StackPanel>
-            <TextBlock Text="Load Image" 
-                       Foreground="White" 
-                       FontWeight="Bold"
-                       Margin="0,0,0,8"/>
+            <TextBlock Text="{Binding Label}" 
+                Foreground="White" 
+                FontWeight="Bold"
+                Margin="0,0,0,8"
+                TextAlignment="Center"/>
             <Button Content="Browse" 
                     Command="{Binding BrowseCommand}"/>
         </StackPanel>

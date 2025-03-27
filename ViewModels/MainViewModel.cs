@@ -160,7 +160,7 @@ public class MainViewModel : ViewModelBase
     private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
     {
         var imageData = new ImageNodeData(image, node);
-        OutputImages.AddOrUpdate(node.NodeId, imageData);
+        OutputImages.AddOrUpdate(node.Label, imageData);
     }
 
     private int indexOfNode(IFlowchartNode node)
@@ -168,7 +168,7 @@ public class MainViewModel : ViewModelBase
         int i = 0;
         for (; i < Nodes.Count; i++)
         {
-            if (Nodes[i].NodeId == node.NodeId)
+            if (Nodes[i].Label == node.Label)
                 return i;
         }
         return -1;

@@ -18,6 +18,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         
         public event Action<BitmapImage>? ImageOutputted;
 
+        private static int _counter = 0;
+
         public ICommand BrowseCommand { get; }
 
         private string? _imagePath;
@@ -53,6 +55,9 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             // Set custom size for image nodes
             Width = 100;
             Height = 60;
+
+            Id = ++_counter;
+            Label = $"LoadImage{(Id > 1 ? $" {Id}" : "")}";
 
             _imageService = imageService;
             BrowseCommand = new RelayCommand(_ => BrowseImage());

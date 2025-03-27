@@ -5,8 +5,8 @@ namespace ImageProcessing.App.ViewModels
 {
     public class FlowchartNodeViewModel : ViewModelBase, IFlowchartNode
     {
-        private string _nodeId = Guid.NewGuid().ToString();
-        public string NodeId { get => _nodeId; set => SetProperty(ref _nodeId, value); }
+        public int Id { get; protected set; }
+        public string Label { get; protected set; }
 
         private double _x;
         public double X { get => _x; set => SetProperty(ref _x, value); }
@@ -19,6 +19,5 @@ namespace ImageProcessing.App.ViewModels
 
         private double _height = 100;
         public double Height { get => _height; set => SetProperty(ref _height, value); }
-
     }
 }
