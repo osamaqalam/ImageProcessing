@@ -147,7 +147,7 @@ public class MainViewModel : ViewModelBase
                     RegisterOutputImage(newNode, image));
         }
 
-        // Redraw all connections
+        // Redraw all connections based off of shifted nodes
         Connections.Clear();
         for (int i = 0; i < Nodes.Count - 1; i++)
         {

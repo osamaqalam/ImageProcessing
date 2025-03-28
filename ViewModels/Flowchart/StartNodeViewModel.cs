@@ -8,6 +8,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
 {
     public class StartNodeViewModel : FlowchartNodeViewModel
     {
-        public StartNodeViewModel() { }
+        public StartNodeViewModel() {
+            Label = "StartNode";
+        }
     }
 }

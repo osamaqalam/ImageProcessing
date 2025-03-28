@@ -8,6 +8,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
 {
     public class EndNodeViewModel : FlowchartNodeViewModel
     {
-        public EndNodeViewModel() { }
+        public EndNodeViewModel() {
+            Label = "EndNode";
+        }
     }
 }
