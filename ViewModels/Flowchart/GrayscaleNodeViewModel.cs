@@ -4,6 +4,8 @@ using ImageProcessing.App.Utilities;
 using ImageProcessing.App.Views;
 using System.Windows.Media.Imaging;
 using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
@@ -14,17 +16,38 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         // Reference to MainVM's OutputImages
         public ObservableDictionary<string, ImageNodeData> OutputImages { get; }
 
+        /// <summary>
+        /// Collection view of OutputImages excluding entries from this node
+        /// </summary>
+        private ICollectionView? _inImgOptions;
+        public ICollectionView InImgOptions
+        {
+            get
+            {
+                if (_inImgOptions == null)
+                {
+                    _inImgOptions = CollectionViewSource.GetDefaultView(OutputImages);
+                    _inImgOptions.Filter = item =>
+                    {
+                        var kvp = (MutableKeyValuePair<string, ImageNodeData>)item;
+                        return kvp.Value.SourceNode != this;
+                    };
+                }
+                return _inImgOptions;
+            }
+        }
+
         public event Action<BitmapImage>? ImageOutputted;
 
         private static int _counter = 0;
 
-        private string? _selectedNodeId;
-        public string? SelectedNodeId
+        private string? _selectedInImgLabel;
+        public string? SelectedInImgLabel
         {
-            get => _selectedNodeId;
+            get => _selectedInImgLabel;
             set
             {
-                if (SetProperty(ref _selectedNodeId, value))
+                if (SetProperty(ref _selectedInImgLabel, value))
                     ;
             }
         }
@@ -58,12 +81,12 @@ namespace ImageProcessing.App.ViewModels.Flowchart
 
         public bool CanExecute()
         {
-            return SelectedNodeId != null;
+            return SelectedInImgLabel != null;
         }
 
         public void Execute()
         {
-            OutputImages.TryGetValue(SelectedNodeId, out ImageNodeData imageNodeData);
+            OutputImages.TryGetValue(SelectedInImgLabel, out ImageNodeData imageNodeData);
             OutputImage = _imageService.ConvertToGrayscale(imageNodeData.Image); ;
             ImageOutputted?.Invoke(OutputImage);
         }
@@ -76,6 +99,13 @@ namespace ImageProcessing.App.ViewModels.Flowchart
                 imageWindow.SetImage(bitmapImage);
                 imageWindow.Show();
             });
+        }
+
+        public void RefreshFilter()
+        {
+            // Recreate the CollectionView to ensure the filter uses the latest state
+            _inImgOptions = null;
+            OnPropertyChanged(nameof(InImgOptions));
         }
     }
 }

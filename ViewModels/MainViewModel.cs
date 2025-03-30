@@ -142,9 +142,13 @@ public class MainViewModel : ViewModelBase
         // Handle image output if supported
         if (newNode is IImageOutputNode imageNode)
         {
+            // Register output image when ImageOutputted event is raised
             imageNode.ImageOutputted += (image) =>
                 Application.Current.Dispatcher.Invoke(() =>
                     RegisterOutputImage(newNode, image));
+
+            // Register placeholder output image so it can be used in other nodes
+            RegisterOutputImage(newNode, null);
         }
 
         // Redraw all connections based off of shifted nodes
@@ -160,7 +164,7 @@ public class MainViewModel : ViewModelBase
     private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
     {
         var imageData = new ImageNodeData(image, node);
-        OutputImages.AddOrUpdate(node.Label, imageData);
+        OutputImages.AddOrUpdate(node.Label+".OutputImage", imageData);
     }
 
     private int indexOfNode(IFlowchartNode node)
