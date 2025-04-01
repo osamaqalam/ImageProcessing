@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:flowchart="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
         xmlns:vm="clr-namespace:ImageProcessing.App.ViewModels.Flowchart"
-        xmlns:converters="clr-namespace:ImageProcessing.App.Utilities"
+        xmlns:utilities="clr-namespace:ImageProcessing.App.Utilities"
         Title="Flowchart App" Height="600" Width="600">
 
     <Window.Resources>
-        <converters:PositionConverter x:Key="PositionConverter"/>
-        <converters:ArrowPathConverter x:Key="ArrowPathConverter"/>
+        <utilities:PositionConverter x:Key="PositionConverter"/>
+        <utilities:ArrowPathConverter x:Key="ArrowPathConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -23,8 +23,8 @@
                     <Path Stroke="Black" StrokeThickness="2">
                         <Path.InputBindings>
                             <MouseBinding MouseAction="LeftClick" 
-                      Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                      CommandParameter="{Binding}"/>
+                                Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
                         </Path.InputBindings>
                         <Path.Data>
                             <MultiBinding Converter="{StaticResource ArrowPathConverter}">
@@ -86,6 +86,12 @@
                                 </MultiBinding>
                             </flowchart:LoadImageNodeView.Margin>
                         </flowchart:LoadImageNodeView>
+                        <Grid.InputBindings>
+                            <MouseBinding 
+                                MouseAction="LeftClick"
+                                Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
                     </Grid>
                 </DataTemplate>
 
@@ -101,6 +107,12 @@
                                 </MultiBinding>
                             </flowchart:GrayscaleNodeView.Margin>
                         </flowchart:GrayscaleNodeView>
+                        <Grid.InputBindings>
+                            <MouseBinding 
+                                MouseAction="LeftClick"
+                                Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
                     </Grid>
                 </DataTemplate>
 

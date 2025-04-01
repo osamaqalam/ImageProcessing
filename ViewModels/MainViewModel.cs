@@ -25,7 +25,7 @@ public class MainViewModel : ViewModelBase
     public ICommand AddNodeCommand { get; }
     public ICommand DeleteNodeCommand { get; }
     public ICommand ConnectionClickedCommand { get; }
-
+    public ICommand SelectNodeCommand { get; }
     public ICommand ExecuteCommand { get; }
 
     private const double FLOWCHART_CENTER_X = 300;
@@ -40,7 +40,17 @@ public class MainViewModel : ViewModelBase
     public FlowchartNodeViewModel? SelectedNode
     {
         get => _selectedNode;
-        set => SetProperty(ref _selectedNode, value);
+        set
+        {
+            // Deselect previous node
+            if (_selectedNode != null)
+                _selectedNode.IsSelected = false;
+
+            // Select new node
+            SetProperty(ref _selectedNode, value);
+            if (_selectedNode != null)
+                _selectedNode.IsSelected = true;
+        }
     }
 
     public MainViewModel(IImageService imageService)
@@ -67,6 +77,7 @@ public class MainViewModel : ViewModelBase
         // Initialize commands
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
+        SelectNodeCommand = new RelayCommand(node => SelectedNode = node as FlowchartNodeViewModel);
         ExecuteCommand = new RelayCommand(ExecuteAll);
     }
 

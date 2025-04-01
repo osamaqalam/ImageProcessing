@@ -19,5 +19,12 @@ namespace ImageProcessing.App.ViewModels
 
         private double _height = 100;
         public double Height { get => _height; set => SetProperty(ref _height, value); }
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
     }
 }

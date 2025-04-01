@@ -8,7 +8,7 @@
              d:DesignHeight="100" d:DesignWidth="200">
     <Border Width="{Binding Width}" 
         Height="{Binding Height}"
-        Background="#FF2D2D30" 
+        Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
         CornerRadius="4" 
         Padding="8">
         <StackPanel>
