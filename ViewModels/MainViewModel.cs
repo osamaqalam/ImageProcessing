@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ImageProcessing.App.Models.Flowchart;
 using System.Windows.Media.Imaging;
 using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
+using System.Diagnostics;
 
 namespace ImageProcessing.App.ViewModels;
 
@@ -78,22 +79,21 @@ public class MainViewModel : ViewModelBase
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
         SelectNodeCommand = new RelayCommand(node => SelectedNode = node as FlowchartNodeViewModel);
-        ExecuteCommand = new RelayCommand(ExecuteAll);
+        ExecuteCommand = new RelayCommand(async _ => await ExecuteAll());
     }
 
-    private void ExecuteAll(object param)
+    private async Task ExecuteAll()
     {
         foreach (var node in Nodes.OfType<IExecutableNode>())
         {
             try
             {
                 if(node.CanExecute())
-                    node.Execute();
+                    await Task.Run(() => node.Execute());
             }
             catch (Exception ex)
             {
-                // Handle error
-                //break;
+                Debug.WriteLine($"Execution failed: {ex.Message}");
             }
         }
     }
