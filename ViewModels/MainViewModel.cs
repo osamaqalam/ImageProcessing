@@ -23,7 +23,6 @@ public class MainViewModel : ViewModelBase
     public ObservableDictionary<string, ImageNodeData> OutputImages { get; } = new();
 
     // Commands
-    public ICommand AddNodeCommand { get; }
     public ICommand DeleteNodeCommand { get; }
     public ICommand ConnectionClickedCommand { get; }
     public ICommand SelectNodeCommand { get; }
@@ -101,11 +100,20 @@ public class MainViewModel : ViewModelBase
     /// <summary>Removes the currently selected node</summary>
     private void DeleteNode()
     {
-        if (SelectedNode != null)
+        int selNodeIndex = indexOfNode(SelectedNode);
+        Nodes.Remove(SelectedNode);
+        OutputImages.Remove(SelectedNode.Label + ".OutputImage");
+
+        // Shift the nodes after the deleted node upwards
+        if (selNodeIndex > 0)
         {
-            Nodes.Remove(SelectedNode);
-            SelectedNode = null;
+            for (int i = selNodeIndex; i < Nodes.Count; i++)
+            {
+                Nodes[i].Y = Nodes[selNodeIndex-1].Y + (i - selNodeIndex + 1) * FLOWCHART_NODES_GAP;
+            }
         }
+        RedrawConnections();
+        SelectedNode = null;
     }
 
     /// <summary>Determines if the Delete command can execute</summary>
@@ -162,14 +170,7 @@ public class MainViewModel : ViewModelBase
             RegisterOutputImage(newNode, null);
         }
 
-        // Redraw all connections based off of shifted nodes
-        Connections.Clear();
-        for (int i = 0; i < Nodes.Count - 1; i++)
-        {
-            var conn = new ConnectionViewModel(Nodes[i], Nodes[i+1]);
-            Connections.Add(conn);
-        }
-        
+        RedrawConnections();
     }
 
     private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
@@ -180,12 +181,21 @@ public class MainViewModel : ViewModelBase
 
     private int indexOfNode(IFlowchartNode node)
     {
-        int i = 0;
-        for (; i < Nodes.Count; i++)
+        for (int i = 0; i < Nodes.Count; i++)
         {
             if (Nodes[i].Label == node.Label)
                 return i;
         }
         return -1;
+    }
+
+    private void RedrawConnections()
+    {
+        Connections.Clear();
+        for (int i = 0; i < Nodes.Count - 1; i++)
+        {
+            var conn = new ConnectionViewModel(Nodes[i], Nodes[i + 1]);
+            Connections.Add(conn);
+        }
     }
 }

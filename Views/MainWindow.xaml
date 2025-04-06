@@ -14,6 +14,7 @@
     <Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
             <Button Content="Execute" Command="{Binding ExecuteCommand}"/>
+            <Button Content="Delete" Command="{Binding DeleteNodeCommand}"/>
         </StackPanel>
 
         <!-- Draw connections FIRST (behind nodes) -->
