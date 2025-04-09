@@ -26,14 +26,21 @@ public class MainViewModel : ViewModelBase
     public ICommand DeleteNodeCommand { get; }
     public ICommand ConnectionClickedCommand { get; }
     public ICommand SelectNodeCommand { get; }
-    public ICommand ExecuteCommand { get; }
+    public ICommand PlayCommand { get; }
+    public ICommand PlayNextCommand { get; }
+    public ICommand PauseCommand { get; }
+    public ICommand StopCommand { get; }
+    public ICommand ResetCommand { get; }
+
+    // Execution state
+    private bool _isExecuting;
+    private int _currentNodeIndex;
 
     private const double FLOWCHART_CENTER_X = 300;
     private const double FLOWCHART_START_Y = 100;
     private const double FLOWCHART_START_END_WIDTH = 10;
     private const double FLOWCHART_START_END_HEIGHT = 10;
     private const double FLOWCHART_NODES_GAP = 100;
-
 
     // Currently selected node (for context menus/properties)
     private FlowchartNodeViewModel? _selectedNode;
@@ -56,6 +63,7 @@ public class MainViewModel : ViewModelBase
     public MainViewModel(IImageService imageService)
     {
         _imageService = imageService;
+        _currentNodeIndex = 1;
 
         // Initialize start and end nodes
         var startNode = new StartNodeViewModel { X = FLOWCHART_CENTER_X,
@@ -78,23 +86,105 @@ public class MainViewModel : ViewModelBase
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
         SelectNodeCommand = new RelayCommand(node => SelectedNode = node as FlowchartNodeViewModel);
-        ExecuteCommand = new RelayCommand(async _ => await ExecuteAll());
+
+        PlayCommand = new RelayCommand(
+            async _ => await ExecuteAll(),
+            _ => !_isExecuting && Nodes.Any(n => n is IExecutableNode)
+        );
+
+        PlayNextCommand = new RelayCommand(
+            async _ => await ExecuteNextNode(),
+            _ => !_isExecuting && Nodes.Any(n => n is IExecutableNode) &&
+            _currentNodeIndex < Nodes.Count
+        );
+
+        PauseCommand = new RelayCommand(
+            _ => PauseExecution(),
+            _ => _isExecuting
+        );
+
+        StopCommand = new RelayCommand(
+            _ => StopExecution(),
+            _ => _isExecuting
+        );
+
+        ResetCommand = new RelayCommand(
+            _ => ResetExecution(),
+            _ => !_isExecuting
+        );
     }
 
     private async Task ExecuteAll()
     {
-        foreach (var node in Nodes.OfType<IExecutableNode>())
+        _isExecuting = true;
+
+        try
         {
-            try
+            foreach (var node in Nodes
+                                .Skip(_currentNodeIndex)
+                                .OfType<IExecutableNode>())
             {
-                if(node.CanExecute())
-                    await Task.Run(() => node.Execute());
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Execution failed: {ex.Message}");
+                if (!_isExecuting) break;
+                await ExecuteNode(node);
+                _currentNodeIndex++;
             }
         }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Execution failed: {ex.Message}");
+        }
+        finally
+        {
+            _isExecuting = false;
+        }
+    }
+
+    private async Task ExecuteNextNode()
+    {
+        _isExecuting = true;
+        try
+        {
+            var node = Nodes
+                .Skip(_currentNodeIndex)
+                .OfType<IExecutableNode>()
+                .FirstOrDefault();
+
+            if (node != null)
+            {
+                await ExecuteNode(node);
+                _currentNodeIndex++;
+            }
+        }
+        finally
+        {
+            _isExecuting = false;
+        }
+    }
+
+    private async Task ExecuteNode(IExecutableNode node)
+    {
+        if (node.CanExecute())
+        {
+            await Task.Run(() => node.Execute());
+        }
+    }
+
+    private void PauseExecution()
+    {
+        //_cts?.Cancel();
+        _isExecuting = false;
+    }
+
+    private void StopExecution()
+    {
+        //_cts?.Cancel();
+        _isExecuting = false;
+        _currentNodeIndex = 1;
+    }
+
+    private void ResetExecution()
+    {
+        _currentNodeIndex = 1;
     }
 
     /// <summary>Removes the currently selected node</summary>

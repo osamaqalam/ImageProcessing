@@ -9,11 +9,68 @@
     <Window.Resources>
         <utilities:PositionConverter x:Key="PositionConverter"/>
         <utilities:ArrowPathConverter x:Key="ArrowPathConverter"/>
+
+        <!-- Control Bar Button Style -->
+        <Style x:Key="ControlBarButton" TargetType="Button">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#22000000"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
+    <DockPanel>
+        <!-- Control Bar -->
+        <ToolBarTray DockPanel.Dock="Top" Background="#EEE">
+            <ToolBar>
+                <!-- Play All -->
+                <Button Command="{Binding PlayCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Execute entire flowchart">
+                    <Image Source="/Icons/play.png" Width="16" Height="16"/>
+                </Button>
+
+                <!-- Play Next Node -->
+                <Button Command="{Binding PlayNextCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Execute next node">
+                    <Image Source="/Icons/play_next.png" Width="16" Height="16"/>
+                </Button>
+
+                <!-- Pause -->
+                <Button Command="{Binding PauseCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Pause execution">
+                    <Image Source="/Icons/pause.png" Width="16" Height="16"/>
+                </Button>
+
+                <!-- Stop -->
+                <Button Command="{Binding StopCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Stop execution">
+                    <Image Source="/Icons/stop.png" Width="16" Height="16"/>
+                </Button>
+
+                <!-- Stop -->
+                <Button Command="{Binding ResetCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Reset Execution">
+                    <Image Source="/Icons/reset.png" Width="16" Height="16"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+    
     <Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Execute" Command="{Binding ExecuteCommand}"/>
             <Button Content="Delete" Command="{Binding DeleteNodeCommand}"/>
         </StackPanel>
 
@@ -127,5 +184,6 @@
         </ItemsControl>
     </Grid>
 
-    
+    </DockPanel>
+
 </Window>
