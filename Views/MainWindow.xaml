@@ -9,6 +9,7 @@
     <Window.Resources>
         <utilities:PositionConverter x:Key="PositionConverter"/>
         <utilities:ArrowPathConverter x:Key="ArrowPathConverter"/>
+        <utilities:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter"/>
 
         <!-- Control Bar Button Style -->
         <Style x:Key="ControlBarButton" TargetType="Button">
@@ -134,37 +135,45 @@
 
                 <DataTemplate DataType="{x:Type vm:LoadImageNodeViewModel}">
                     <Grid>
-                        <flowchart:LoadImageNodeView>
-                            <flowchart:LoadImageNodeView.Margin>
-                                <MultiBinding Converter="{StaticResource PositionConverter}">
-                                    <Binding Path="X"/>
-                                    <Binding Path="Y"/>
-                                    <Binding Path="Width"/>
-                                    <Binding Path="Height"/>
-                                </MultiBinding>
-                            </flowchart:LoadImageNodeView.Margin>
-                        </flowchart:LoadImageNodeView>
+                        <Border Opacity="{Binding DataContext.IsExecuting,
+                            RelativeSource={RelativeSource AncestorType=Window},
+                            Converter={StaticResource BooleanToOpacityConverter}}">
+                            <flowchart:LoadImageNodeView>
+                                <flowchart:LoadImageNodeView.Margin>
+                                    <MultiBinding Converter="{StaticResource PositionConverter}">
+                                        <Binding Path="X"/>
+                                        <Binding Path="Y"/>
+                                        <Binding Path="Width"/>
+                                        <Binding Path="Height"/>
+                                    </MultiBinding>
+                                </flowchart:LoadImageNodeView.Margin>
+                            </flowchart:LoadImageNodeView>
+                        </Border>
                         <Grid.InputBindings>
-                            <MouseBinding 
-                                MouseAction="LeftClick"
-                                Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}"/>
+                        <MouseBinding 
+                            MouseAction="LeftClick"
+                            Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"/>
                         </Grid.InputBindings>
                     </Grid>
                 </DataTemplate>
 
                 <DataTemplate DataType="{x:Type vm:GrayscaleNodeViewModel}">
                     <Grid>
-                        <flowchart:GrayscaleNodeView>
-                            <flowchart:GrayscaleNodeView.Margin>
-                                <MultiBinding Converter="{StaticResource PositionConverter}">
-                                    <Binding Path="X"/>
-                                    <Binding Path="Y"/>
-                                    <Binding Path="Width"/>
-                                    <Binding Path="Height"/>
-                                </MultiBinding>
-                            </flowchart:GrayscaleNodeView.Margin>
-                        </flowchart:GrayscaleNodeView>
+                        <Border Opacity="{Binding DataContext.IsExecuting,
+                        RelativeSource={RelativeSource AncestorType=Window},
+                        Converter={StaticResource BooleanToOpacityConverter}}">
+                            <flowchart:GrayscaleNodeView>
+                                <flowchart:GrayscaleNodeView.Margin>
+                                    <MultiBinding Converter="{StaticResource PositionConverter}">
+                                        <Binding Path="X"/>
+                                        <Binding Path="Y"/>
+                                        <Binding Path="Width"/>
+                                        <Binding Path="Height"/>
+                                    </MultiBinding>
+                                </flowchart:GrayscaleNodeView.Margin>
+                            </flowchart:GrayscaleNodeView>
+                        </Border>
                         <Grid.InputBindings>
                             <MouseBinding 
                                 MouseAction="LeftClick"

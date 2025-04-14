@@ -34,6 +34,12 @@ public class MainViewModel : ViewModelBase
 
     // Execution state
     private bool _isExecuting;
+    public bool IsExecuting
+    {
+        get => _isExecuting;
+        private set => SetProperty(ref _isExecuting, value);
+    }
+
     private int _currentNodeIndex;
 
     private const double FLOWCHART_CENTER_X = 300;
@@ -116,7 +122,7 @@ public class MainViewModel : ViewModelBase
 
     private async Task ExecuteAll()
     {
-        _isExecuting = true;
+        IsExecuting = true;
 
         try
         {
@@ -135,13 +141,13 @@ public class MainViewModel : ViewModelBase
         }
         finally
         {
-            _isExecuting = false;
+            IsExecuting = false;
         }
     }
 
     private async Task ExecuteNextNode()
     {
-        _isExecuting = true;
+        IsExecuting = true;
         try
         {
             var node = Nodes
@@ -157,7 +163,7 @@ public class MainViewModel : ViewModelBase
         }
         finally
         {
-            _isExecuting = false;
+            IsExecuting = false;
         }
     }
 
@@ -171,14 +177,12 @@ public class MainViewModel : ViewModelBase
 
     private void PauseExecution()
     {
-        //_cts?.Cancel();
-        _isExecuting = false;
+        IsExecuting = false;
     }
 
     private void StopExecution()
     {
-        //_cts?.Cancel();
-        _isExecuting = false;
+        IsExecuting = false;
         _currentNodeIndex = 1;
     }
 
