@@ -38,6 +38,12 @@ namespace ImageProcessing.App
                     sp.GetRequiredService<MainViewModel>().OutputImages 
                 )
             );
+            services.AddTransient<ResizeNodeViewModel>(sp =>
+                new ResizeNodeViewModel(
+                    sp.GetRequiredService<IImageService>(),
+                    sp.GetRequiredService<MainViewModel>().OutputImages
+                )
+            );
             return services.BuildServiceProvider();
         }
     }

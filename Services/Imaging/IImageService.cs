@@ -21,4 +21,13 @@ public interface IImageService
     /// <param name="source"> the color image</param>
     /// <returns></returns>
     BitmapImage ConvertToGrayscale(BitmapImage source);
+
+    /// <summary>
+    /// Resizes the image to a new size based on the scale factor
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
+    BitmapImage Resize(BitmapImage source, double scale);
+
 }

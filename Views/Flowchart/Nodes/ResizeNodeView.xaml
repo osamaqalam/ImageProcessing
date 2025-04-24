@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ImageProcessing.App.Views.Flowchart.Nodes.ResizeNodeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
+             xmlns:utilities="clr-namespace:ImageProcessing.App.Utilities"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="200">
+
+    <UserControl.Resources>
+        <utilities:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
+
+    <Border Width="{Binding Width}" 
+    Height="{Binding Height}"
+    Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
+    CornerRadius="4" 
+    Padding="8">
+        <StackPanel>
+            <TextBlock Text="{Binding Label}" 
+                Foreground="White" 
+                FontWeight="Bold"
+                Margin="0,0,0,8"
+                TextAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding InImgOptions}"
+                DisplayMemberPath="Key"
+                SelectedValuePath="Key"
+                SelectedValue="{Binding SelectedInImgLabel}"
+                DropDownOpened="ComboBox_DropDownOpened"
+                IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}">
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Scale: " 
+                    Foreground="White" 
+                    Margin="2,2,0,0"
+                    VerticalAlignment="Center"/>
+                <TextBox TextWrapping="Wrap" 
+                    Text="{Binding Scale, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}"
+                    PreviewTextInput="TextBox_PreviewTextInput"
+                    DataObject.Pasting="TextBox_Pasting" 
+                    Width="120"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+</UserControl>

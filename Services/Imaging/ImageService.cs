@@ -80,4 +80,43 @@ public class ImageService : IImageService
         }
         return bitmapImage;
     }
+
+    /// <summary>
+    /// Resizes the image to a new size based on the scale factor
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
+    public BitmapImage Resize(BitmapImage source, double scale)
+    {
+        using var imageStream = new MemoryStream(); // store the image in bytes
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(source));
+        encoder.Save(imageStream);
+        imageStream.Position = 0;
+
+        using var image = Image.Load<Rgba32>(imageStream);
+        image.Mutate(x => x.Resize(
+            new ResizeOptions
+            {
+                Size = new Size((int)(source.PixelWidth * scale), (int)(source.PixelHeight * scale)),
+                Mode = ResizeMode.Max
+            }));
+
+        // Convert back to BitmapImage
+        var bitmapImage = new BitmapImage();
+        using (var outputStream = new MemoryStream())
+        {
+            image.Save(outputStream, new PngEncoder());
+            outputStream.Position = 0;
+
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = outputStream;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+        }
+        return bitmapImage;
+    }
+
 }

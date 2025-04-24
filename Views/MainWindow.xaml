@@ -183,7 +183,32 @@
                     </Grid>
                 </DataTemplate>
 
-            </ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:ResizeNodeViewModel}">
+                        <Grid>
+                            <Border Opacity="{Binding DataContext.IsExecuting,
+                            RelativeSource={RelativeSource AncestorType=Window},
+                            Converter={StaticResource BooleanToOpacityConverter}}">
+                                <flowchart:ResizeNodeView>
+                                    <flowchart:ResizeNodeView.Margin>
+                                        <MultiBinding Converter="{StaticResource PositionConverter}">
+                                            <Binding Path="X"/>
+                                            <Binding Path="Y"/>
+                                            <Binding Path="Width"/>
+                                            <Binding Path="Height"/>
+                                        </MultiBinding>
+                                    </flowchart:ResizeNodeView.Margin>
+                                </flowchart:ResizeNodeView>
+                            </Border>
+                            <Grid.InputBindings>
+                            <MouseBinding 
+                                MouseAction="LeftClick"
+                                Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"/>
+                            </Grid.InputBindings>
+                        </Grid>
+                    </DataTemplate>
+
+                </ItemsControl.Resources>
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

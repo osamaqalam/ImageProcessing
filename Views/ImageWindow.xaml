@@ -1,8 +1,10 @@
 ﻿<Window x:Class="ImageProcessing.App.Views.ImageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ImageWindow" Height="450" Width="800">
+        Title="ImageWindow"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="CanResize">
     <Grid>
-        <Image x:Name="DisplayedImage" Stretch="Uniform"/>
+        <Image x:Name="DisplayedImage" Stretch="None"/>
     </Grid>
 </Window>

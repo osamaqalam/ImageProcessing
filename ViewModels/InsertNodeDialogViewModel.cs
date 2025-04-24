@@ -18,6 +18,7 @@ namespace ImageProcessing.App.ViewModels
         {
             AvailableNodeTypes.Add(new ToolboxItem("Load Image", typeof(LoadImageNodeViewModel)));
             AvailableNodeTypes.Add(new ToolboxItem("Grayscale", typeof(GrayscaleNodeViewModel)));
+            AvailableNodeTypes.Add(new ToolboxItem("Resize", typeof(ResizeNodeViewModel)));
 
             OkCommand = new RelayCommand(_ =>
             {
