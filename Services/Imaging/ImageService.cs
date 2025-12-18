@@ -95,19 +95,34 @@ public class ImageService : IImageService
         encoder.Save(imageStream);
         imageStream.Position = 0;
 
-        using var image = Image.Load<Rgba32>(imageStream);
-        image.Mutate(x => x.Resize(
-            new ResizeOptions
+        using var sourceImage = Image.Load<Rgba32>(imageStream);
+        Image<Rgba32> resizedImage = new Image<Rgba32>((int)(source.Width*scale), (int)(source.Height*scale));
+
+        for (int i = 0; i < resizedImage.Width; i++)
+        {
+            for(int j = 0; j < resizedImage.Height; j++)
             {
-                Size = new Size((int)(source.PixelWidth * scale), (int)(source.PixelHeight * scale)),
-                Mode = ResizeMode.Max
-            }));
+                int srcX = (int)(i * (sourceImage.Width / (float)resizedImage.Width));
+                int srcY = (int)(j * (sourceImage.Height / (float)resizedImage.Height));
+
+                resizedImage[i, j] = sourceImage[srcX, srcY];
+            }
+        }
+
+        // library solutions
+        //using var image = Image.Load<Rgba32>(imageStream);
+        //image.Mutate(x => x.Resize(
+        //    new ResizeOptions
+        //    {
+        //        Size = new Size((int)(source.PixelWidth * scale), (int)(source.PixelHeight * scale)),
+        //        Mode = ResizeMode.Max
+        //    }));
 
         // Convert back to BitmapImage
         var bitmapImage = new BitmapImage();
         using (var outputStream = new MemoryStream())
         {
-            image.Save(outputStream, new PngEncoder());
+            resizedImage.Save(outputStream, new PngEncoder());
             outputStream.Position = 0;
 
             bitmapImage.BeginInit();
