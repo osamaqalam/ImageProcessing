@@ -61,19 +61,24 @@
                     <Image Source="/Icons/stop.png" Width="16" Height="16"/>
                 </Button>
 
-                <!-- Stop -->
+                <!-- Reset -->
                 <Button Command="{Binding ResetCommand}"
                         Style="{StaticResource ControlBarButton}"
                         ToolTip="Reset Execution">
                     <Image Source="/Icons/reset.png" Width="16" Height="16"/>
                 </Button>
+
+                <!-- Delete -->
+                <Button Command="{Binding DeleteNodeCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Delete Node">
+                    <Image Source="/Icons/delete.png" Width="16" Height="16"/>
+                </Button>
             </ToolBar>
         </ToolBarTray>
     
     <Grid>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Delete" Command="{Binding DeleteNodeCommand}"/>
-        </StackPanel>
+        
 
         <!-- Draw connections FIRST (behind nodes) -->
         <ItemsControl ItemsSource="{Binding Connections}">
