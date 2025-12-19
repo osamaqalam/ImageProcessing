@@ -91,8 +91,22 @@ public class MainViewModel : ViewModelBase
         // Initialize commands
         DeleteNodeCommand = new RelayCommand(execute => DeleteNode(), canExecute => CanDeleteNode());
         ConnectionClickedCommand = new RelayCommand(OnConnectionClicked);
-        SelectNodeCommand = new RelayCommand(node => SelectedNode = node as FlowchartNodeViewModel);
+        SelectNodeCommand = new RelayCommand(node =>
+        {
+            SelectedNode = node as FlowchartNodeViewModel;
 
+            // Display the output image if the selected node is an ImageOutputNode and the OutputImage was generated
+            if (node is IImageOutputNode imageNode && imageNode.OutputImage != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var imageWindow = new ImageProcessing.App.Views.ImageWindow();
+                    imageWindow.SetImage(imageNode.OutputImage);
+                    imageWindow.Owner = Application.Current.MainWindow;
+                    imageWindow.Show();
+                });
+            }
+        });
         PlayCommand = new RelayCommand(
             async _ => await ExecuteAll(),
             _ => !_isExecuting && Nodes.Any(n => n is IExecutableNode)
