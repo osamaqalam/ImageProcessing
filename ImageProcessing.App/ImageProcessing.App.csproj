@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ImageProcessing.Tests\**" />
-    <EmbeddedResource Remove="ImageProcessing.Tests\**" />
-    <None Remove="ImageProcessing.Tests\**" />
-    <Page Remove="ImageProcessing.Tests\**" />
+    <Compile Remove="..\ImageProcessing.Tests\**" />
+    <EmbeddedResource Remove="..\ImageProcessing.Tests\**" />
+    <None Remove="..\ImageProcessing.Tests\**" />
+    <Page Remove="..\ImageProcessing.Tests\**" />
   </ItemGroup>
 
   <ItemGroup>

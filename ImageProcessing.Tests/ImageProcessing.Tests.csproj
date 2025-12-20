@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImageProcessing.App.csproj" />
+    <ProjectReference Include="..\ImageProcessing.App\ImageProcessing.App.csproj" />
   </ItemGroup>
 
 </Project>
