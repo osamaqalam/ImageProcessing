@@ -84,19 +84,37 @@
         <ItemsControl ItemsSource="{Binding Connections}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:ConnectionViewModel}">
-                    <Path Stroke="Black" StrokeThickness="2">
-                        <Path.InputBindings>
-                            <MouseBinding MouseAction="LeftClick" 
-                                Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                CommandParameter="{Binding}"/>
-                        </Path.InputBindings>
-                        <Path.Data>
-                            <MultiBinding Converter="{StaticResource ArrowPathConverter}">
-                                <Binding Path="Source"/>
-                                <Binding Path="Target"/>
-                            </MultiBinding>
-                        </Path.Data>
-                    </Path>
+                    <Canvas>
+                        <!-- Line -->
+                        <Path Stroke="Black" StrokeThickness="2">
+                            <Path.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                    Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"/>
+                            </Path.InputBindings>
+                            <Path.Data>
+                                <MultiBinding Converter="{StaticResource ArrowPathConverter}" ConverterParameter="Line">
+                                    <Binding Path="Source"/>
+                                    <Binding Path="Target"/>
+                                </MultiBinding>
+                            </Path.Data>
+                        </Path>
+                    
+                        <!-- Arrowhead -->
+                        <Path Fill="Black" Stroke="Black" StrokeThickness="1">
+                            <Path.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                    Command="{Binding DataContext.ConnectionClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"/>
+                            </Path.InputBindings>
+                            <Path.Data>
+                                <MultiBinding Converter="{StaticResource ArrowPathConverter}" ConverterParameter="Triangle">
+                                    <Binding Path="Source"/>
+                                    <Binding Path="Target"/>
+                                </MultiBinding>
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
