@@ -6,7 +6,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ImageProcessing.Tests\**" />
+    <EmbeddedResource Remove="ImageProcessing.Tests\**" />
+    <None Remove="ImageProcessing.Tests\**" />
+    <Page Remove="ImageProcessing.Tests\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Icons\delete.png" />
