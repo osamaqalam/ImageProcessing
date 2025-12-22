@@ -30,10 +30,30 @@ public class ImageService : IImageService
         imageStream.Position = 0;
 
         using var image = Image.Load<Rgba32>(imageStream);
-        
 
-        // fill up
+        if (thresholdingType == "InRange")
+        {
+            for (int i = 0; i < image.Width; i++)
+            {
+                for (int j = 0; j < image.Height; j++)
+                {
+                    // Assuming the image is grayscale so we can check any channel (R, G, or B)
+                    image[i, j] = (image[i, j].R >= rangeStart && image[i, j].R <= rangeEnd) ? new Rgba32(255, 255, 255, 255) : new Rgba32(0, 0, 0, 255);
+                }
+            }
+        }
 
+        else if (thresholdingType == "OutRange")
+        {
+             for (int i = 0; i < image.Width; i++)
+            {
+                for (int j = 0; j < image.Height; j++)
+                {
+                    // Assuming the image is grayscale so we can check any channel (R, G, or B)
+                    image[i, j] = (image[i, j].R >= rangeStart && image[i, j].R <= rangeEnd) ? new Rgba32(0, 0, 0, 255) : new Rgba32(255, 255, 255, 255);
+                }
+            }
+        }
         // Convert back to BitmapImage
         var bitmapImage = new BitmapImage();
         using (var outputStream = new MemoryStream())
