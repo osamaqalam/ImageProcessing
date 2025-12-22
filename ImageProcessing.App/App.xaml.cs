@@ -31,6 +31,12 @@ namespace ImageProcessing.App
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<InsertNodeDialogViewModel>();
             services.AddTransient<IFlowchartNode, FlowchartNodeViewModel>();
+            services.AddTransient<BinarizeNodeViewModel>(sp =>
+                new BinarizeNodeViewModel(
+                    sp.GetRequiredService<IImageService>(),
+                    sp.GetRequiredService<MainViewModel>().OutputImages
+                )
+            );
             services.AddTransient<LoadImageNodeViewModel>();
             services.AddTransient<GrayscaleNodeViewModel>(sp =>
                 new GrayscaleNodeViewModel(

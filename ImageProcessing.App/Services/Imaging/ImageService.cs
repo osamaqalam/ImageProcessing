@@ -11,6 +11,45 @@ namespace ImageProcessing.App.Services.Imaging;
 
 public class ImageService : IImageService
 {
+
+    /// <summary>
+    /// Binarize an image based on the given thresholding range and type
+    /// </summary>
+    /// <param name="source"> Source Image to binarize</param>
+    /// <param name="thresholdingType">Thresholding type</param>
+    /// <param name="rangeStart"> Start of the thresholding range </param>
+    /// <param name="rangeEnd"> End of the thresholding range</param>
+    /// <returns></returns>
+    public BitmapImage ConvertToBinary(BitmapImage source, String thresholdingType, int rangeStart, int rangeEnd)
+    {
+        // Convert BitmapImage to ImageSharp's Image<Rgba32>
+        using var imageStream = new MemoryStream(); // store the image in bytes
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(source));
+        encoder.Save(imageStream);
+        imageStream.Position = 0;
+
+        using var image = Image.Load<Rgba32>(imageStream);
+        
+
+        // fill up
+
+        // Convert back to BitmapImage
+        var bitmapImage = new BitmapImage();
+        using (var outputStream = new MemoryStream())
+        {
+            image.Save(outputStream, new PngEncoder());
+            outputStream.Position = 0;
+
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = outputStream;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+        }
+        return bitmapImage;
+    }
+
     public ImageData LoadImage(string path)
     {
         using var image = Image.Load(path);

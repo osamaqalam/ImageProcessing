@@ -16,6 +16,7 @@ namespace ImageProcessing.App.ViewModels
 
         public InsertNodeDialogViewModel()
         {
+            AvailableNodeTypes.Add(new ToolboxItem("Binarize", typeof(BinarizeNodeViewModel)));
             AvailableNodeTypes.Add(new ToolboxItem("Load Image", typeof(LoadImageNodeViewModel)));
             AvailableNodeTypes.Add(new ToolboxItem("Grayscale", typeof(GrayscaleNodeViewModel)));
             AvailableNodeTypes.Add(new ToolboxItem("Resize", typeof(ResizeNodeViewModel)));

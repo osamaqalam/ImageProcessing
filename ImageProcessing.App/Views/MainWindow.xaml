@@ -156,6 +156,31 @@
                     </Grid>
                 </DataTemplate>
 
+                <DataTemplate DataType="{x:Type vm:BinarizeNodeViewModel}">
+                    <Grid>
+                        <Border Opacity="{Binding DataContext.IsExecuting,
+                    RelativeSource={RelativeSource AncestorType=Window},
+                    Converter={StaticResource BooleanToOpacityConverter}}">
+                            <flowchart:BinarizeNodeView>
+                                <flowchart:BinarizeNodeView.Margin>
+                                    <MultiBinding Converter="{StaticResource PositionConverter}">
+                                        <Binding Path="X"/>
+                                        <Binding Path="Y"/>
+                                        <Binding Path="Width"/>
+                                        <Binding Path="Height"/>
+                                    </MultiBinding>
+                                </flowchart:BinarizeNodeView.Margin>
+                            </flowchart:BinarizeNodeView>
+                        </Border>
+                        <Grid.InputBindings>
+                            <MouseBinding 
+                            MouseAction="LeftClick"
+                            Command="{Binding DataContext.SelectNodeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+                    </Grid>
+                </DataTemplate>
+
                 <DataTemplate DataType="{x:Type vm:LoadImageNodeViewModel}">
                     <Grid>
                         <Border Opacity="{Binding DataContext.IsExecuting,

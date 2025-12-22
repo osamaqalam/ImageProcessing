@@ -46,7 +46,7 @@ public class MainViewModel : ViewModelBase
     private const double FLOWCHART_START_Y = 100;
     private const double FLOWCHART_START_END_WIDTH = 10;
     private const double FLOWCHART_START_END_HEIGHT = 10;
-    private const double FLOWCHART_NODES_GAP = 100;
+    private const double FLOWCHART_NODES_GAP = 50;
 
     // Currently selected node (for context menus/properties)
     private FlowchartNodeViewModel? _selectedNode;
@@ -78,7 +78,7 @@ public class MainViewModel : ViewModelBase
             Height = FLOWCHART_START_END_HEIGHT };
 
         var endNode = new EndNodeViewModel { X = FLOWCHART_CENTER_X, 
-            Y = FLOWCHART_START_Y + FLOWCHART_NODES_GAP,
+            Y = FLOWCHART_START_Y + (FLOWCHART_START_END_HEIGHT + FLOWCHART_START_END_HEIGHT) / 2 + FLOWCHART_NODES_GAP,
             Width = FLOWCHART_START_END_WIDTH,
             Height = FLOWCHART_START_END_HEIGHT };
 
@@ -217,7 +217,9 @@ public class MainViewModel : ViewModelBase
         {
             for (int i = selNodeIndex; i < Nodes.Count; i++)
             {
-                Nodes[i].Y = Nodes[selNodeIndex-1].Y + (i - selNodeIndex + 1) * FLOWCHART_NODES_GAP;
+                var prevNode = Nodes[i - 1];
+                var currentNode = Nodes[i];
+                currentNode.Y = prevNode.Y + (prevNode.Height + currentNode.Height) / 2 + FLOWCHART_NODES_GAP;
             }
         }
         RedrawConnections();
@@ -251,7 +253,7 @@ public class MainViewModel : ViewModelBase
         // Create new node
         var newNode = (FlowchartNodeViewModel)((App)Application.Current).Services.GetRequiredService(nodeType);
         newNode.X = connection.Source.X; // Keep X of prev node
-        newNode.Y = connection.Source.Y + FLOWCHART_NODES_GAP;
+        newNode.Y = connection.Source.Y + (connection.Source.Height + newNode.Height) / 2 + FLOWCHART_NODES_GAP;
 
         // Add node to collection in place of the old connection's target
         Nodes.Insert(Nodes.IndexOf(connection.Target), newNode);
@@ -262,7 +264,9 @@ public class MainViewModel : ViewModelBase
         {
             for (int i = nextNodeIndex; i < Nodes.Count; i++)
             {
-                Nodes[i].Y = newNode.Y + (i-nextNodeIndex+1) * FLOWCHART_NODES_GAP;
+                var prevNode = Nodes[i - 1];
+                var currentNode = Nodes[i];
+                currentNode.Y = prevNode.Y + (prevNode.Height + currentNode.Height) / 2 + FLOWCHART_NODES_GAP;
             }
         }
 

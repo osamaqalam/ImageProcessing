@@ -10,6 +10,17 @@ namespace ImageProcessing.App.Services.Imaging;
 
 public interface IImageService
 {
+
+    /// <summary>
+    /// Binarize an image based on the given thresholding range and type
+    /// </summary>
+    /// <param name="source"> Source Image to binarize</param>
+    /// <param name="thresholdingType">Thresholding type</param>
+    /// <param name="rangeStart"> Start of the thresholding range </param>
+    /// <param name="rangeEnd"> End of the thresholding range</param>
+    /// <returns></returns>
+    BitmapImage ConvertToBinary(BitmapImage source, String thresholdingType, int rangeStart, int rangeEnd);
+
     /// <summary>
     /// Loads an image from a file path and converts it to our custom ImageData format
     /// </summary>
