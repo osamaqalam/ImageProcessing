@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    public class ResizeNodeViewModel : FlowchartNodeViewModel, IImageOutputNode
+    public class ResizeNodeViewModel : ExecutableNodeViewModel, IImageOutputNode
     {
 
         private readonly IImageService _imageService;
@@ -79,7 +79,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         {
             // Set custom size for image nodes
             Width = 100;
-            Height = 80;
+            Height = 90;
 
             Id = ++_counter;
             Label = $"Resize{(Id > 1 ? $" {Id}" : "")}";
@@ -88,12 +88,12 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             OutputImages = outputImages;
         }
 
-        public bool CanExecute()
+        public override bool CanExecute()
         {
             return SelectedInImgLabel != null && Scale != 0;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             OutputImages.TryGetValue(SelectedInImgLabel, out ImageNodeData imageNodeData);
             OutputImage = _imageService.Resize(imageNodeData.Image, Scale); ;

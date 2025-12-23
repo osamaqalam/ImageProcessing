@@ -185,7 +185,9 @@ public class MainViewModel : ViewModelBase
     {
         if (node.CanExecute())
         {
+            node.IsExecuting = true;
             await Task.Run(() => node.Execute());
+            node.IsExecuting = false;
         }
     }
 

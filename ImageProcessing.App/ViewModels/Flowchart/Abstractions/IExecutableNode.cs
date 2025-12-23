@@ -10,6 +10,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart.Abstractions
     // For nodes that perform processing
     public interface IExecutableNode : IFlowchartNode
     {
+        bool IsExecuting { get; set; }
         void Execute();
         bool CanExecute();
     }

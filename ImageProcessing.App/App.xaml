@@ -9,6 +9,7 @@
 
     <Application.Resources>
         <utilities:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+        <utilities:ExecutingBorderBrushConverter x:Key="ExecutingBorderBrushConverter"/>
     </Application.Resources>
 
 </Application>

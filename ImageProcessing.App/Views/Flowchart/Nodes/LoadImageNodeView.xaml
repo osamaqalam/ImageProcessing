@@ -12,10 +12,12 @@
     </UserControl.Resources>
 
     <Border Width="{Binding Width}" 
-            Height="{Binding Height}"
-            Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
-            CornerRadius="4" 
-            Padding="8">
+        Height="{Binding Height}"
+        Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
+        BorderBrush="{Binding IsExecuting, Converter={StaticResource ExecutingBorderBrushConverter}}"
+        BorderThickness ="3"            
+        CornerRadius="4" 
+        Padding="8">
         <StackPanel>
             <TextBlock Text="{Binding Label}" 
                 Foreground="White" 

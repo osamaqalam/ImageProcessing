@@ -11,7 +11,7 @@ using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    public class LoadImageNodeViewModel : FlowchartNodeViewModel, IImageOutputNode
+    public class LoadImageNodeViewModel : ExecutableNodeViewModel, IImageOutputNode
     {
         private readonly IImageService _imageService;
         private LoadImageNode _model = new();
@@ -54,7 +54,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         {
             // Set custom size for image nodes
             Width = 100;
-            Height = 60;
+            Height = 70;
 
             Id = ++_counter;
             Label = $"LoadImage{(Id > 1 ? $" {Id}" : "")}";
@@ -63,12 +63,12 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             BrowseCommand = new RelayCommand(_ => BrowseImage());
         }
 
-        public bool CanExecute()
+        public override bool CanExecute()
         {
             return ImagePath != null;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             var image = _imageService.LoadImage(ImagePath);
             OutputImage = ConvertToBitmapImage(image); 

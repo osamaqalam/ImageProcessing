@@ -15,7 +15,7 @@ using System.Windows.Media.Media3D;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    class BinarizeNodeViewModel : FlowchartNodeViewModel, IImageOutputNode
+    class BinarizeNodeViewModel : ExecutableNodeViewModel, IImageOutputNode
     {
         private readonly IImageService _imageService;
 
@@ -117,7 +117,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         {
             // Set custom size for image nodes
             Width = 200;
-            Height = 200;
+            Height = 180;
 
             Id = ++_counter;
             Label = $"Binarize{(Id > 1 ? $" {Id}" : "")}";
@@ -126,12 +126,12 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             OutputImages = outputImages;
         }
 
-        public bool CanExecute()
+        public override bool CanExecute()
         {
             return SelectedInImgLabel != null;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             OutputImages.TryGetValue(SelectedInImgLabel, out ImageNodeData imageNodeData);
             OutputImage = _imageService.ConvertToBinary(imageNodeData.Image, _selectedThresholdingType, _rangeStart, _rangeEnd);

@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    class GrayscaleNodeViewModel : FlowchartNodeViewModel, IImageOutputNode
+    class GrayscaleNodeViewModel : ExecutableNodeViewModel, IImageOutputNode
     {
         private readonly IImageService _imageService;
 
@@ -70,7 +70,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         {
             // Set custom size for image nodes
             Width = 100;
-            Height = 60;
+            Height = 70;
 
             Id = ++_counter;
             Label = $"Grayscale{(Id > 1 ? $" {Id}" : "")}";
@@ -79,12 +79,12 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             OutputImages = outputImages;
         }
 
-        public bool CanExecute()
+        public override bool CanExecute()
         {
             return SelectedInImgLabel != null;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             OutputImages.TryGetValue(SelectedInImgLabel, out ImageNodeData imageNodeData);
             OutputImage = _imageService.ConvertToGrayscale(imageNodeData.Image); ;
