@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
              xmlns:utilities="clr-namespace:ImageProcessing.App.Utilities"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="200">
+             d:DesignHeight="130" d:DesignWidth="200">
 
     <UserControl.Resources>
         <utilities:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -32,6 +32,18 @@
                 DropDownOpened="ComboBox_DropDownOpened"
                 IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}">
             </ComboBox>
+            
+            <!-- Interpolation mode Image -->
+            <TextBlock Text="Interpolation Mode:" 
+            Foreground="White" 
+            FontWeight="Bold"
+            Margin="0,0,0,8"
+            TextAlignment="Left"/>
+            <ComboBox ItemsSource="{Binding InterpolationModeOptions}"
+            SelectedItem="{Binding SelectedInterpolationMode}"
+            IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}">
+            </ComboBox>
+            
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="Scale: " 
                     Foreground="White" 

@@ -143,10 +143,11 @@ public class ImageService : IImageService
     /// <summary>
     /// Resizes the image to a new size based on the scale factor
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="scale"></param>
-    /// <returns></returns>
-    public BitmapImage Resize(BitmapImage source, double scale)
+    /// <param name="source"> Image to be resized </param>
+    /// <param name="scale"> Scale of the resizing </param>
+    /// <param name="interpolationMethod"> Choose between NearestNeighbor and Bilinear </param>
+    /// <returns> resized image as BitmapImage</returns>
+    public BitmapImage Resize(BitmapImage source, double scale, String interpolationMethod = "NearestNeighbor")
     {
         using var imageStream = new MemoryStream(); // store the image in bytes
         var encoder = new PngBitmapEncoder();
@@ -157,6 +158,7 @@ public class ImageService : IImageService
         using var sourceImage = Image.Load<Rgba32>(imageStream);
         Image<Rgba32> resizedImage = new Image<Rgba32>((int)(source.Width*scale), (int)(source.Height*scale));
 
+        if(interpolationMethod == "NearestNeighbor")
         for (int i = 0; i < resizedImage.Width; i++)
         {
             for(int j = 0; j < resizedImage.Height; j++)
@@ -165,6 +167,50 @@ public class ImageService : IImageService
                 int srcY = (int)(j * (sourceImage.Height / (float)resizedImage.Height));
 
                 resizedImage[i, j] = sourceImage[srcX, srcY];
+            }
+        }
+        
+        else if(interpolationMethod == "Bilinear")
+        {
+            for (int i = 0; i < resizedImage.Width; i++)
+            {
+                for (int j = 0; j < resizedImage.Height; j++)
+                {
+                    float srcX = (i * (sourceImage.Width / (float)resizedImage.Width));
+                    float srcY = (j * (sourceImage.Height / (float)resizedImage.Height));
+
+                    // Check if the coordinates it maps to already exists in source image since it is a whole number
+                    if (srcX % 1 == 0 && srcY % 1 == 0)
+                    {
+                        resizedImage[i, j] = sourceImage[(int)srcX, (int)srcY];
+                        continue;
+                    }
+
+                    int srcX1 = (int) Math.Floor(srcX);
+                    int srcX2 = Math.Min((int) Math.Ceiling(srcX), sourceImage.Width - 1);
+                    int srcY1 = (int) Math.Floor(srcY);
+                    int srcY2 = Math.Min((int) Math.Ceiling(srcY), sourceImage.Height - 1);
+
+                    var p11 = sourceImage[srcX1, srcY1];
+                    var p21 = sourceImage[srcX2, srcY1];
+                    var p12 = sourceImage[srcX1, srcY2];
+                    var p22 = sourceImage[srcX2, srcY2];
+
+                    // Calculate weights
+                    float wx2 = srcX - srcX1;
+                    float wx1 = 1.0f - wx2;
+                    float wy2 = srcY - srcY1;
+                    float wy1 = 1.0f - wy2;
+
+                    // Interpolate each channel separately
+                    byte r = (byte)(wx1 * wy1 * p11.R + wx2 * wy1 * p21.R + wx1 * wy2 * p12.R + wx2 * wy2 * p22.R);
+                    byte g = (byte)(wx1 * wy1 * p11.G + wx2 * wy1 * p21.G + wx1 * wy2 * p12.G + wx2 * wy2 * p22.G);
+                    byte b = (byte)(wx1 * wy1 * p11.B + wx2 * wy1 * p21.B + wx1 * wy2 * p12.B + wx2 * wy2 * p22.B);
+                    byte a = (byte)(wx1 * wy1 * p11.A + wx2 * wy1 * p21.A + wx1 * wy2 * p12.A + wx2 * wy2 * p22.A);
+
+                    resizedImage[i, j] = new Rgba32(r, g, b, a);
+
+                }
             }
         }
 

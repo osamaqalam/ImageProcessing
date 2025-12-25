@@ -39,6 +39,34 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             }
         }
 
+        /// <summary>
+        /// Collection view for thresholding type options
+        /// </summary>
+        private ICollectionView? _interpolationModeOptions;
+        public ICollectionView InterpolationModeOptions
+        {
+            get
+            {
+                if (_interpolationModeOptions == null)
+                {
+                    var options = new List<string> { "NearestNeighbor", "Bilinear" };
+                    _interpolationModeOptions = CollectionViewSource.GetDefaultView(options);
+                }
+                return _interpolationModeOptions;
+            }
+        }
+
+        private string? _selectedInterpolationMode;
+        public string? SelectedInterpolationMode
+        {
+            get => _selectedInterpolationMode;
+            set
+            {
+                if (SetProperty(ref _selectedInterpolationMode, value))
+                    ;
+            }
+        }
+
         public event Action<BitmapImage>? ImageOutputted;
 
         private static int _counter = 0;
@@ -78,8 +106,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         public ResizeNodeViewModel(IImageService imageService, ObservableDictionary<string, ImageNodeData> outputImages)
         {
             // Set custom size for image nodes
-            Width = 100;
-            Height = 90;
+            Width = 200;
+            Height = 130;
 
             Id = ++_counter;
             Label = $"Resize{(Id > 1 ? $" {Id}" : "")}";
@@ -96,7 +124,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         public override void Execute()
         {
             OutputImages.TryGetValue(SelectedInImgLabel, out ImageNodeData imageNodeData);
-            OutputImage = _imageService.Resize(imageNodeData.Image, Scale); ;
+            OutputImage = _imageService.Resize(imageNodeData.Image, Scale, SelectedInterpolationMode);
             ImageOutputted?.Invoke(OutputImage);
         }
 

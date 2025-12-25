@@ -36,9 +36,10 @@ public interface IImageService
     /// <summary>
     /// Resizes the image to a new size based on the scale factor
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="scale"></param>
-    /// <returns></returns>
-    BitmapImage Resize(BitmapImage source, double scale);
+    /// <param name="source"> Image to be resized </param>
+    /// <param name="scale"> Scale of the resizing </param>
+    /// <param name="interpolationMethod"> Choose between NearestNeighbor and Bilinear </param>
+    /// <returns> resized image as BitmapImage</returns>
+    public BitmapImage Resize(BitmapImage source, double scale, String interpolationMethod);
 
 }
