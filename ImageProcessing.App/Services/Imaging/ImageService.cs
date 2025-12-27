@@ -156,7 +156,7 @@ public class ImageService : IImageService
         imageStream.Position = 0;
 
         using var sourceImage = Image.Load<Rgba32>(imageStream);
-        Image<Rgba32> resizedImage = new Image<Rgba32>((int)(source.Width*scale), (int)(source.Height*scale));
+        Image<Rgba32> resizedImage = new Image<Rgba32>((int)(source.PixelWidth*scale), (int)(source.PixelHeight*scale));
 
         if(interpolationMethod == "NearestNeighbor")
         for (int i = 0; i < resizedImage.Width; i++)
