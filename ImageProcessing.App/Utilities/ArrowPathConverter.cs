@@ -1,4 +1,5 @@
 using ImageProcessing.App.ViewModels;
+using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -12,8 +13,8 @@ namespace ImageProcessing.App.Utilities
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length != 2 ||
-                !(values[0] is FlowchartNodeViewModel source) ||
-                !(values[1] is FlowchartNodeViewModel target))
+                !(values[0] is IFlowchartNode source) ||
+                !(values[1] is IFlowchartNode target))
                 return Geometry.Empty;
 
             double sourceBottom = source.Y + source.Height / 2;

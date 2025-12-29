@@ -10,12 +10,16 @@ using ImageProcessing.App.Models.Flowchart;
 using System.Windows.Media.Imaging;
 using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 using System.Diagnostics;
+using Microsoft.Win32;
+using System.Reflection;
 
 namespace ImageProcessing.App.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     private readonly IImageService _imageService;
+    private readonly IFlowchartSerializationService _serializationService;
+    private readonly IServiceProvider _serviceProvider;
 
     // Collection of flowchart nodes
     public ObservableCollection<IFlowchartNode> Nodes { get; } = new();
@@ -31,6 +35,8 @@ public class MainViewModel : ViewModelBase
     public ICommand PauseCommand { get; }
     public ICommand StopCommand { get; }
     public ICommand ResetCommand { get; }
+    public ICommand SaveFlowchartCommand { get; }
+    public ICommand LoadFlowchartCommand { get; }
 
     // Execution state
     private bool _isExecuting;
@@ -66,9 +72,11 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public MainViewModel(IImageService imageService)
+    public MainViewModel(IImageService imageService, IFlowchartSerializationService serializationService, IServiceProvider serviceProvider)
     {
         _imageService = imageService;
+        _serializationService = serializationService;
+        _serviceProvider = serviceProvider;
         _currentNodeIndex = 1;
 
         // Initialize start and end nodes
@@ -130,6 +138,16 @@ public class MainViewModel : ViewModelBase
 
         ResetCommand = new RelayCommand(
             _ => ResetExecution(),
+            _ => !_isExecuting
+        );
+
+        SaveFlowchartCommand = new RelayCommand(
+            _ => SaveFlowchart(),
+            _ => !_isExecuting
+        );
+
+        LoadFlowchartCommand = new RelayCommand(
+            _ => LoadFlowchart(),
             _ => !_isExecuting
         );
     }
@@ -210,6 +228,7 @@ public class MainViewModel : ViewModelBase
     /// <summary>Removes the currently selected node</summary>
     private void DeleteNode()
     {
+        if (SelectedNode == null) return;
         int selNodeIndex = indexOfNode(SelectedNode);
         Nodes.Remove(SelectedNode);
         OutputImages.Remove(SelectedNode.Label + ".OutputImage");
@@ -231,7 +250,7 @@ public class MainViewModel : ViewModelBase
     /// <summary>Determines if the Delete command can execute</summary>
     private bool CanDeleteNode() => SelectedNode != null;
 
-    private void OnConnectionClicked(object param)
+    private void OnConnectionClicked(object? param)
     {
         if (param is ConnectionViewModel connection)
         {
@@ -287,7 +306,7 @@ public class MainViewModel : ViewModelBase
         RedrawConnections();
     }
 
-    private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage image)
+    private void RegisterOutputImage(FlowchartNodeViewModel node, BitmapImage? image)
     {
         var imageData = new ImageNodeData(image, node);
         OutputImages.AddOrUpdate(node.Label+".OutputImage", imageData);
@@ -310,6 +329,151 @@ public class MainViewModel : ViewModelBase
         {
             var conn = new ConnectionViewModel(Nodes[i], Nodes[i + 1]);
             Connections.Add(conn);
+        }
+    }
+
+    private void SaveFlowchart()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = "Flowchart files (*.flowchart)|*.flowchart|JSON files (*.json)|*.json|All files (*.*)|*.*",
+            DefaultExt = ".flowchart",
+            Title = "Save Flowchart"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            try
+            {
+                _serializationService.SaveFlowchart(dialog.FileName, Nodes, Connections);
+                //MessageBox.Show("Flowchart saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save flowchart: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void LoadFlowchart()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "Flowchart files (*.flowchart)|*.flowchart|JSON files (*.json)|*.json|All files (*.*)|*.*",
+            Title = "Load Flowchart"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            try
+            {
+                var flowchartDto = _serializationService.LoadFlowchart(dialog.FileName);
+                ReconstructFlowchart(flowchartDto);
+                // MessageBox.Show("Flowchart loaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load flowchart: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void ReconstructFlowchart(FlowchartDTO flowchartDto)
+    {
+        // Clear existing flowchart
+        Nodes.Clear();
+        Connections.Clear();
+        OutputImages.Clear();
+        _currentNodeIndex = 1;
+
+        // Reset static counters for all node types
+        ResetNodeCounters();
+
+        // Create factory
+        var factory = new NodeFactory(_serviceProvider, OutputImages);
+
+        // Dictionary to map IDs to reconstructed nodes
+        var nodeMap = new Dictionary<int, IFlowchartNode>();
+
+        // Reconstruct nodes
+        foreach (var nodeDto in flowchartDto.Nodes)
+        {
+            var node = factory.CreateNode(nodeDto);
+            if (node != null)
+            {
+                Nodes.Add(node);
+                nodeMap[nodeDto.Id] = node;
+
+                // Register output images for image output nodes
+                if (node is IImageOutputNode imageNode)
+                {
+                    imageNode.ImageOutputted += (image) =>
+                        Application.Current.Dispatcher.Invoke(() =>
+                            RegisterOutputImage((FlowchartNodeViewModel)node, image));
+
+                    RegisterOutputImage((FlowchartNodeViewModel)node, null);
+                }
+            }
+        }
+
+        // Reconstruct connections
+        foreach (var connectionDto in flowchartDto.Connections)
+        {
+            if (nodeMap.TryGetValue(connectionDto.SourceNodeId, out var source) &&
+                nodeMap.TryGetValue(connectionDto.TargetNodeId, out var target))
+            {
+                Connections.Add(new ConnectionViewModel(source, target));
+            }
+        }
+
+        RedrawConnections();
+
+        // Update counters based on loaded nodes
+        UpdateNodeCounters();
+    }
+
+    private void ResetNodeCounters()
+    {
+        // Use reflection to reset static counters in node ViewModels
+        ResetCounter(typeof(LoadImageNodeViewModel));
+        ResetCounter(typeof(GrayscaleNodeViewModel));
+        ResetCounter(typeof(ResizeNodeViewModel));
+        ResetCounter(typeof(BinarizeNodeViewModel));
+    }
+
+    private void ResetCounter(Type nodeType)
+    {
+        var counterField = nodeType.GetField("_counter", BindingFlags.NonPublic | BindingFlags.Static);
+        if (counterField != null)
+        {
+            counterField.SetValue(null, 0);
+        }
+    }
+
+    private void UpdateNodeCounters()
+    {
+        // Update counters to match the highest ID loaded
+        var maxId = new Dictionary<Type, int>();
+
+        foreach (var node in Nodes)
+        {
+            var nodeType = node.GetType();
+            if (node is FlowchartNodeViewModel vm)
+            {
+                if (!maxId.ContainsKey(nodeType) || vm.Id > maxId[nodeType])
+                {
+                    maxId[nodeType] = vm.Id;
+                }
+            }
+        }
+
+        foreach (var kvp in maxId)
+        {
+            var counterField = kvp.Key.GetField("_counter", BindingFlags.NonPublic | BindingFlags.Static);
+            if (counterField != null)
+            {
+                counterField.SetValue(null, kvp.Value);
+            }
         }
     }
 }

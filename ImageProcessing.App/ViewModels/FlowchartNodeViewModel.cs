@@ -5,8 +5,8 @@ namespace ImageProcessing.App.ViewModels
 {
     public class FlowchartNodeViewModel : ViewModelBase, IFlowchartNode
     {
-        public int Id { get; protected set; }
-        public string Label { get; protected set; }
+        public int Id { get; set; }
+        public string Label { get; set; }
 
         private double _x;
         public double X { get => _x; set => SetProperty(ref _x, value); }

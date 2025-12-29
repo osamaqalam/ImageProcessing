@@ -26,6 +26,7 @@ namespace ImageProcessing.App
             // Register the service
             services.AddSingleton<IImageService, ImageService>();
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IFlowchartSerializationService, FlowchartSerializationService>();
 
             // Register ViewModels
             services.AddSingleton<MainViewModel>();

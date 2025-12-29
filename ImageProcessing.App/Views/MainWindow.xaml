@@ -74,6 +74,22 @@
                         ToolTip="Delete Node">
                     <Image Source="/Icons/delete.png" Width="16" Height="16"/>
                 </Button>
+
+                <Separator/>
+
+                <!-- Save Flowchart -->
+                <Button Command="{Binding SaveFlowchartCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Save Flowchart">
+                    <TextBlock Text="💾" FontSize="14"/>
+                </Button>
+
+                <!-- Load Flowchart -->
+                <Button Command="{Binding LoadFlowchartCommand}"
+                        Style="{StaticResource ControlBarButton}"
+                        ToolTip="Load Flowchart">
+                    <TextBlock Text="📂" FontSize="14"/>
+                </Button>
             </ToolBar>
         </ToolBarTray>
     
