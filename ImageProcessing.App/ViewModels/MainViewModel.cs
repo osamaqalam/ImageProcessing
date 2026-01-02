@@ -104,7 +104,7 @@ public class MainViewModel : ViewModelBase
             SelectedNode = node as FlowchartNodeViewModel;
 
             // Display the output image if the selected node is an ImageOutputNode and the OutputImage was generated
-            if (node is IImageOutputNode imageNode && imageNode.OutputImage != null)
+            if (node is ImageOutputNodeViewModel imageNode && imageNode.OutputImage != null)
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -292,7 +292,7 @@ public class MainViewModel : ViewModelBase
         }
 
         // Handle image output if supported
-        if (newNode is IImageOutputNode imageNode)
+        if (newNode is ImageOutputNodeViewModel imageNode)
         {
             // Register output image when ImageOutputted event is raised
             imageNode.ImageOutputted += (image) =>
@@ -405,7 +405,7 @@ public class MainViewModel : ViewModelBase
                 nodeMap[nodeDto.Id] = node;
 
                 // Register output images for image output nodes
-                if (node is IImageOutputNode imageNode)
+                if (node is ImageOutputNodeViewModel imageNode)
                 {
                     imageNode.ImageOutputted += (image) =>
                         Application.Current.Dispatcher.Invoke(() =>

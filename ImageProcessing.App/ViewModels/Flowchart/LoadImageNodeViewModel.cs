@@ -1,22 +1,18 @@
 ﻿using ImageProcessing.App.Models.Flowchart;
-using Microsoft.Win32;
-using System.Windows.Input;
-using ImageProcessing.App.Utilities;
-using ImageProcessing.App.Services.Imaging;
-using System.Windows.Media.Imaging;
-using System.IO;
 using ImageProcessing.App.Models.Imaging;
-using ImageProcessing.App.Views;
+using ImageProcessing.App.Services.Imaging;
+using ImageProcessing.App.Utilities;
 using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
+using Microsoft.Win32;
+using System.IO;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ImageProcessing.App.ViewModels.Flowchart
 {
-    public class LoadImageNodeViewModel : ExecutableNodeViewModel, IImageOutputNode
+    public class LoadImageNodeViewModel : ImageOutputNodeViewModel
     {
-        private readonly IImageService _imageService;
         private LoadImageNode _model = new();
-        
-        public event Action<BitmapImage>? ImageOutputted;
 
         private static int _counter = 0;
 
@@ -37,20 +33,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             }
         }
 
-        private BitmapImage? _outputImage;
-        public BitmapImage? OutputImage
-        {
-            get => _outputImage;
-            private set
-            {
-                if (SetProperty(ref _outputImage, value))
-                {
-                    OpenImageWindow(value);
-                    ImageOutputted?.Invoke(value);
-                }
-            }
-        }
         public LoadImageNodeViewModel(IImageService imageService)
+            : base(imageService)
         {
             // Set custom size for image nodes
             Width = 100;
@@ -59,7 +43,6 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             Id = ++_counter;
             Label = $"LoadImage{(Id > 1 ? $" {Id}" : "")}";
 
-            _imageService = imageService;
             BrowseCommand = new RelayCommand(_ => BrowseImage());
         }
 
@@ -101,16 +84,6 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             }
             bitmap.Freeze(); // For thread safety
             return bitmap;
-        }
-
-        private void OpenImageWindow(BitmapImage bitmapImage)
-        {
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                var imageWindow = new ImageWindow();
-                imageWindow.SetImage(bitmapImage);
-                imageWindow.Show();
-            });
         }
     }
 }
