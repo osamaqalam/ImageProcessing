@@ -47,8 +47,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             : base(imageService, outputImages)
         {
             // Set custom size for image nodes
-            Width = 200;
-            Height = 130;
+            Width = 100;
+            Height = 40;
 
             Id = ++_counter;
             Label = $"Resize{(Id > 1 ? $" {Id}" : "")}";

@@ -14,7 +14,7 @@ namespace ImageProcessing.App.ViewModels.Flowchart
         {
             // Set custom size for image nodes
             Width = 100;
-            Height = 70;
+            Height = 40;
 
             Id = ++_counter;
             Label = $"Grayscale{(Id > 1 ? $" {Id}" : "")}";

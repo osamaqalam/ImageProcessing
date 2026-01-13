@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:flowchart="clr-namespace:ImageProcessing.App.Views.Flowchart.Nodes"
         xmlns:vm="clr-namespace:ImageProcessing.App.ViewModels.Flowchart"
+        xmlns:vmBase="clr-namespace:ImageProcessing.App.ViewModels"
         xmlns:utilities="clr-namespace:ImageProcessing.App.Utilities"
         Title="Flowchart App" Height="600" Width="600">
 
@@ -10,6 +11,7 @@
         <utilities:PositionConverter x:Key="PositionConverter"/>
         <utilities:ArrowPathConverter x:Key="ArrowPathConverter"/>
         <utilities:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter"/>
+        <utilities:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 
         <!-- Control Bar Button Style -->
         <Style x:Key="ControlBarButton" TargetType="Button">
@@ -94,6 +96,14 @@
         </ToolBarTray>
     
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="200" MinHeight="100"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main flowchart area -->
+        <Grid Grid.Row="0">
         
 
         <!-- Draw connections FIRST (behind nodes) -->
@@ -280,6 +290,138 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+    </Grid>
+
+    <!-- GridSplitter -->
+    <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="#CCC"/>
+
+    <!-- Bottom pane for node inputs -->
+    <Border Grid.Row="2" Background="#F5F5F5" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+        <Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ContentControl Content="{Binding SelectedNode}">
+                    <ContentControl.Resources>
+                        <!-- Template for Binarize Node -->
+                        <DataTemplate DataType="{x:Type vm:BinarizeNodeViewModel}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="{Binding Label}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <!-- Input Image -->
+                                <TextBlock Text="Image:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding InImgOptions}"
+                                    DisplayMemberPath="Key"
+                                    SelectedValuePath="Key"
+                                    SelectedValue="{Binding SelectedInImgLabel}"
+                                    DropDownOpened="ImageComboBox_DropDownOpened"
+                                    Margin="0,0,0,10"
+                                    Width="200"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                <!-- Thresholding mode -->
+                                <TextBlock Text="Thresholding Mode:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding ThresholdingTypeOptions}"
+                                    SelectedItem="{Binding SelectedThresholdingType}"
+                                    Margin="0,0,0,10"
+                                    Width="200"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                <!-- Threshold range start -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBlock Text="Start: " VerticalAlignment="Center" Width="80"/>
+                                    <TextBox Text="{Binding RangeStart, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="120"/>
+                                </StackPanel>
+
+                                <!-- Threshold range end -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="End: " VerticalAlignment="Center" Width="80"/>
+                                    <TextBox Text="{Binding RangeEnd, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="120"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!-- Template for Grayscale Node -->
+                        <DataTemplate DataType="{x:Type vm:GrayscaleNodeViewModel}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="{Binding Label}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <!-- Input Image -->
+                                <TextBlock Text="Image:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding InImgOptions}"
+                                    DisplayMemberPath="Key"
+                                    SelectedValuePath="Key"
+                                    SelectedValue="{Binding SelectedInImgLabel}"
+                                    DropDownOpened="ImageComboBox_DropDownOpened"
+                                    Width="200"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!-- Template for Resize Node -->
+                        <DataTemplate DataType="{x:Type vm:ResizeNodeViewModel}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="{Binding Label}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <!-- Input Image -->
+                                <TextBlock Text="Image:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding InImgOptions}"
+                                    DisplayMemberPath="Key"
+                                    SelectedValuePath="Key"
+                                    SelectedValue="{Binding SelectedInImgLabel}"
+                                    DropDownOpened="ImageComboBox_DropDownOpened"
+                                    Margin="0,0,0,10"
+                                    Width="200"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                <!-- Interpolation mode -->
+                                <TextBlock Text="Interpolation Mode:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding InterpolationModeOptions}"
+                                    SelectedItem="{Binding SelectedInterpolationMode}"
+                                    Margin="0,0,0,10"
+                                    Width="200"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                                <!-- Scale -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Scale: " VerticalAlignment="Center" Width="80"/>
+                                    <TextBox Text="{Binding Scale, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="120"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!-- Template for LoadImage Node -->
+                        <DataTemplate DataType="{x:Type vm:LoadImageNodeViewModel}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="{Binding Label}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                
+                                <!-- Browse button -->
+                                <Button Content="Browse for Image" 
+                                    Command="{Binding BrowseCommand}"
+                                    Width="150"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!-- Default template for other nodes -->
+                        <DataTemplate DataType="{x:Type vmBase:FlowchartNodeViewModel}">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="No inputs available for this node" FontStyle="Italic" Foreground="#999"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+
     </Grid>
 
     </DockPanel>

@@ -5,11 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:utilities="clr-namespace:ImageProcessing.App.Utilities"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="300">
-
-    <UserControl.Resources>
-        <utilities:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-    </UserControl.Resources>
+             d:DesignHeight="40" d:DesignWidth="100">
 
     <Border Width="{Binding Width}" 
         Height="{Binding Height}"
@@ -18,15 +14,11 @@
         BorderThickness ="3"            
         CornerRadius="4" 
         Padding="8">
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <TextBlock Text="{Binding Label}" 
                 Foreground="White" 
                 FontWeight="Bold"
-                Margin="0,0,0,8"
                 TextAlignment="Center"/>
-            <Button Content="Browse" 
-                    Command="{Binding BrowseCommand}"
-                    IsEnabled="{Binding DataContext.IsExecuting, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"/>
         </StackPanel>
     </Border>
 </UserControl>

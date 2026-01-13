@@ -55,8 +55,8 @@ namespace ImageProcessing.App.ViewModels.Flowchart
             : base(imageService, outputImages)
         {
             // Set custom size for image nodes
-            Width = 200;
-            Height = 180;
+            Width = 100;
+            Height = 40;
 
             Id = ++_counter;
             Label = $"Binarize{(Id > 1 ? $" {Id}" : "")}";

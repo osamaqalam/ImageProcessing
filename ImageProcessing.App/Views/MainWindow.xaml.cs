@@ -1,4 +1,5 @@
 ﻿using ImageProcessing.App.ViewModels;
+using ImageProcessing.App.ViewModels.Flowchart.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Windows;
@@ -25,6 +26,14 @@ namespace ImageProcessing.App.Views
             // Enable data binding in MainWindow.xaml to attributes defined in MainViewModel.cs
             // This implements concept of Dependency Injection which promotes seperation of concerns
             DataContext = ((App)Application.Current).Services.GetRequiredService<MainViewModel>();
+        }
+
+        private void ImageComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            if (sender is ComboBox comboBox && comboBox.DataContext is ImageOutputNodeViewModel vm)
+            {
+                vm.RefreshFilter();
+            }
         }
     }
 }
